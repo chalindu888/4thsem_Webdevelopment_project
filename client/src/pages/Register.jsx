@@ -1,0 +1,168 @@
+import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import api from '../api/client'
+
+function Register() {
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    setError('')
+    setMessage('')
+
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match.')
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const { data } = await api.post('/auth/register', {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      })
+      localStorage.setItem('secureai_token', data.token)
+      setMessage('Account created successfully.')
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || 'Unable to create your account. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="auth-page">
+      <div className="auth-left">
+        <Link to="/" className="auth-logo">
+          <div className="brand-icon">🛡️</div>
+
+          <div>
+            <h2>SecureAI</h2>
+            <span>Security Awareness Platform</span>
+          </div>
+        </Link>
+
+        <div className="auth-intro">
+          <span className="section-tag">GET STARTED</span>
+
+          <h1>
+            Build Better
+            <span> Security Habits</span>
+          </h1>
+
+          <p>
+            Create your SecureAI account and discover your cybersecurity risk
+            level through intelligent assessments and awareness training.
+          </p>
+
+          <div className="auth-benefit">
+            <span>✓</span>
+            Complete personalized risk assessments
+          </div>
+
+          <div className="auth-benefit">
+            <span>✓</span>
+            Identify cybersecurity weaknesses
+          </div>
+
+          <div className="auth-benefit">
+            <span>✓</span>
+            Improve through awareness training
+          </div>
+        </div>
+      </div>
+
+      <div className="auth-right">
+        <div className="auth-card">
+          <div className="auth-card-heading">
+            <h2>Create Account</h2>
+
+            <p>Start your cybersecurity awareness journey.</p>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Full Name</label>
+
+              <input
+                type="text"
+                placeholder="Enter your full name"
+                required
+                value={form.name}
+                onChange={(event) => setForm({ ...form, name: event.target.value })}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Email Address</label>
+
+              <input
+                type="email"
+                placeholder="example@email.com"
+                required
+                value={form.email}
+                onChange={(event) => setForm({ ...form, email: event.target.value })}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Password</label>
+
+              <input
+                type="password"
+                placeholder="Create a strong password"
+                required
+                value={form.password}
+                onChange={(event) => setForm({ ...form, password: event.target.value })}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Confirm Password</label>
+
+              <input
+                type="password"
+                placeholder="Confirm your password"
+                required
+                value={form.confirmPassword}
+                onChange={(event) => setForm({ ...form, confirmPassword: event.target.value })}
+              />
+            </div>
+
+            <label className="terms-row">
+              <input type="checkbox" required />
+
+              <span>
+                I agree to the Terms of Service and Privacy Policy.
+              </span>
+            </label>
+
+            <button className="auth-submit" type="submit" disabled={loading}>
+              {loading ? 'Creating Account...' : 'Create Account'}
+              <span>→</span>
+            </button>
+          </form>
+
+          {error && <p className="form-message error-message">{error}</p>}
+          {message && <p className="form-message success-message">{message}</p>}
+
+          <p className="auth-switch">
+            Already have an account?
+            <Link to="/login"> Sign In</Link>
+          </p>
+
+          <Link to="/" className="back-home">
+            ← Back to homepage
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default Register
