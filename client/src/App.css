@@ -762,15 +762,13 @@
   gap: 11px;
 }
 
-.brand-icon {
+.brand-image {
   width: 38px;
   height: 38px;
-  display: grid;
-  place-items: center;
+  flex: 0 0 38px;
   border-radius: 12px;
-  background: var(--navy);
+  object-fit: cover;
   box-shadow: 0 8px 20px rgba(18, 48, 74, 0.2);
-  font-size: 19px;
 }
 
 .brand h2,

@@ -39,7 +39,7 @@ function Register() {
     <div className="auth-page">
       <div className="auth-left">
         <Link to="/" className="auth-logo">
-          <div className="brand-icon">🛡️</div>
+          <img className="brand-image" src="/security.jpg" alt="" />
 
           <div>
             <h2>SecureAI</h2>

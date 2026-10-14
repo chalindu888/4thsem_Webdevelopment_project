@@ -9,7 +9,7 @@ function Home() {
       <header className="navbar">
         <div className="container navbar-content">
           <div className="brand">
-            <div className="brand-icon">🛡️</div>
+            <img className="brand-image" src="/security.jpg" alt="" />
 
             <div>
               <h2>SecureAI</h2>
@@ -418,7 +418,7 @@ function Home() {
         <div className="container footer-content">
           <div className="footer-brand">
             <div className="brand">
-              <div className="brand-icon">🛡️</div>
+              <img className="brand-image" src="/security.jpg" alt="" />
 
               <div>
                 <h2>SecureAI</h2>
