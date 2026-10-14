@@ -5,14 +5,14 @@ function Results() {
     <div className="simple-page">
       <div className="simple-navbar">
         <Link to="/" className="simple-brand">
-          🛡️ SecureAI
+           SecureAI
         </Link>
 
         <Link to="/dashboard">Dashboard</Link>
       </div>
 
       <main className="placeholder-page">
-        <div className="placeholder-icon">📊</div>
+        <div className="placeholder-icon"></div>
 
         <span className="section-tag">ASSESSMENT RESULTS</span>
 

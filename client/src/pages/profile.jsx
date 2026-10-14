@@ -5,7 +5,7 @@ function Profile() {
     <div className="simple-page">
       <div className="simple-navbar">
         <Link to="/" className="simple-brand">
-          🛡️ SecureAI
+           SecureAI
         </Link>
 
         <Link to="/dashboard">Dashboard</Link>
@@ -13,7 +13,7 @@ function Profile() {
 
       <main className="placeholder-page">
         <div className="placeholder-icon">
-          👤
+          
         </div>
 
         <span className="section-tag">

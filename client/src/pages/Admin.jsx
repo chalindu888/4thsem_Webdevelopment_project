@@ -5,7 +5,7 @@ function Admin() {
     <div className="simple-page">
       <div className="simple-navbar">
         <Link to="/" className="simple-brand">
-          🛡️ SecureAI Admin
+           SecureAI Admin
         </Link>
 
         <Link to="/">Logout</Link>

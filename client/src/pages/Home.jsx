@@ -156,7 +156,7 @@ function Home() {
               </div>
 
               <div className="recommendation-box">
-                <span className="recommendation-icon">✨</span>
+                <span className="recommendation-icon"></span>
                 <div>
                   <strong>AI Recommendation</strong>
                   <p>
@@ -188,37 +188,37 @@ function Home() {
 
             <div className="feature-grid">
               <FeatureCard
-                icon="📋"
+                icon=""
                 title="Security Risk Assessment"
                 description="Complete an intelligent questionnaire that evaluates your security habits across multiple cybersecurity categories."
               />
 
               <FeatureCard
-                icon="🤖"
+                icon=""
                 title="AI Recommendations"
                 description="Receive personalized security recommendations based on the weaknesses detected during your assessment."
               />
 
               <FeatureCard
-                icon="📚"
+                icon=""
                 title="Awareness Training"
                 description="Learn important cybersecurity concepts through structured security awareness learning modules."
               />
 
               <FeatureCard
-                icon="📊"
+                icon=""
                 title="Risk Dashboard"
                 description="Monitor your security score, assessment history, weak areas and improvement progress."
               />
 
               <FeatureCard
-                icon="🎯"
+                icon=""
                 title="Knowledge Quizzes"
                 description="Test your knowledge after completing security awareness modules and monitor your learning progress."
               />
 
               <FeatureCard
-                icon="🛡️"
+                icon=""
                 title="Threat Awareness"
                 description="Improve your ability to recognize phishing, social engineering, malware and modern AI-based threats."
               />
@@ -246,28 +246,28 @@ function Home() {
             <div className="process-grid">
               <ProcessCard
                 number="01"
-                icon="👤"
+                icon=""
                 title="Create Account"
                 description="Register securely and create your personal cybersecurity awareness profile."
               />
 
               <ProcessCard
                 number="02"
-                icon="📝"
+                icon=""
                 title="Take Assessment"
                 description="Answer cybersecurity questions covering your everyday digital security practices."
               />
 
               <ProcessCard
                 number="03"
-                icon="📊"
+                icon=""
                 title="Analyze Risk"
                 description="The system calculates your overall and category-specific cybersecurity risk."
               />
 
               <ProcessCard
                 number="04"
-                icon="✨"
+                icon=""
                 title="Improve Security"
                 description="Follow personalized AI recommendations and complete awareness training modules."
               />
@@ -293,37 +293,37 @@ function Home() {
 
               <div className="category-items">
                 <SecurityCategory
-                  icon="🔑"
+                  icon=""
                   title="Password Security"
                   text="Password strength, reuse and password management."
                 />
 
                 <SecurityCategory
-                  icon="🎣"
+                  icon=""
                   title="Phishing Awareness"
                   text="Email, message and website phishing detection."
                 />
 
                 <SecurityCategory
-                  icon="📱"
+                  icon=""
                   title="Device Security"
                   text="Device updates, locking and application security."
                 />
 
                 <SecurityCategory
-                  icon="📡"
+                  icon=""
                   title="Network Security"
                   text="Wi-Fi safety and secure network practices."
                 />
 
                 <SecurityCategory
-                  icon="👥"
+                  icon=""
                   title="Social Engineering"
                   text="Protection from manipulation and impersonation."
                 />
 
                 <SecurityCategory
-                  icon="🧠"
+                  icon=""
                   title="AI & Deepfake Threats"
                   text="Awareness of emerging AI-generated cyber threats."
                 />
@@ -374,7 +374,7 @@ function Home() {
               </div>
 
               <div className="summary-tip">
-                <span>💡</span>
+                <span></span>
 
                 <div>
                   <strong>Priority Improvement</strong>
@@ -393,7 +393,11 @@ function Home() {
         <section className="cta-section">
           <div className="container cta-container">
             <div>
-              <span className="cta-icon">🛡️</span>
+              <img
+                src="/security.jpg"
+                alt="Security Illustration"
+                className="cta-security-img"
+              />
 
               <h2>How Secure Are Your Digital Habits?</h2>
 

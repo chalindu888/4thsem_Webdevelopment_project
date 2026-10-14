@@ -33,7 +33,7 @@ function Assessment() {
     <div className="simple-page">
       <div className="simple-navbar">
         <Link to="/" className="simple-brand">
-          🛡️ SecureAI
+           SecureAI
         </Link>
 
         <Link to="/dashboard">Dashboard</Link>

@@ -5,7 +5,7 @@ function Dashboard() {
     <div className="simple-page">
       <div className="simple-navbar">
         <Link to="/" className="simple-brand">
-          🛡️ SecureAI
+           SecureAI
         </Link>
 
         <div>
@@ -20,7 +20,7 @@ function Dashboard() {
           <div>
             <span className="section-tag">USER DASHBOARD</span>
 
-            <h1>Welcome back 👋</h1>
+            <h1>Welcome back </h1>
 
             <p>
               Here is an overview of your current cybersecurity awareness and
@@ -37,7 +37,7 @@ function Dashboard() {
 
         <div className="dashboard-stat-grid">
           <div className="dashboard-stat-card">
-            <span>🛡️</span>
+            <span></span>
 
             <div>
               <p>Security Score</p>
@@ -46,7 +46,7 @@ function Dashboard() {
           </div>
 
           <div className="dashboard-stat-card">
-            <span>⚠️</span>
+            <span></span>
 
             <div>
               <p>Risk Level</p>
@@ -55,7 +55,7 @@ function Dashboard() {
           </div>
 
           <div className="dashboard-stat-card">
-            <span>📚</span>
+            <span></span>
 
             <div>
               <p>Modules Completed</p>
@@ -64,7 +64,7 @@ function Dashboard() {
           </div>
 
           <div className="dashboard-stat-card">
-            <span>🎯</span>
+            <span></span>
 
             <div>
               <p>Quiz Average</p>
@@ -96,19 +96,19 @@ function Dashboard() {
             </div>
 
             <Recommendation
-              icon="🔐"
+              icon=""
               title="Enable MFA"
               description="Enable multi-factor authentication on your important accounts."
             />
 
             <Recommendation
-              icon="🔑"
+              icon=""
               title="Improve Password Security"
               description="Avoid password reuse across multiple online services."
             />
 
             <Recommendation
-              icon="🎣"
+              icon=""
               title="Review Phishing Training"
               description="Complete the phishing awareness learning module."
             />

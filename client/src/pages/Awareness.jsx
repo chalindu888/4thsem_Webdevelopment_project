@@ -3,32 +3,32 @@ import { Link } from 'react-router-dom'
 function Awareness() {
   const modules = [
     {
-      icon: '🎣',
+      icon: '',
       title: 'Phishing Awareness',
       level: 'Beginner',
     },
     {
-      icon: '🔑',
+      icon: '',
       title: 'Password Security',
       level: 'Beginner',
     },
     {
-      icon: '📱',
+      icon: '',
       title: 'Device Security',
       level: 'Intermediate',
     },
     {
-      icon: '👥',
+      icon: '',
       title: 'Social Engineering',
       level: 'Intermediate',
     },
     {
-      icon: '📡',
+      icon: '',
       title: 'Network Security',
       level: 'Intermediate',
     },
     {
-      icon: '🤖',
+      icon: '',
       title: 'AI & Deepfake Threats',
       level: 'Advanced',
     },
@@ -38,7 +38,7 @@ function Awareness() {
     <div className="simple-page">
       <div className="simple-navbar">
         <Link to="/" className="simple-brand">
-          🛡️ SecureAI
+           SecureAI
         </Link>
 
         <Link to="/dashboard">Dashboard</Link>
