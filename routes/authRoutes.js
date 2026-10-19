@@ -11,7 +11,7 @@ const createToken = (user) => jwt.sign(
   { expiresIn: '7d' },
 );
 
-router.post('/register', async (req, res, next) => {
+const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     if (!name || !email || !password) return res.status(400).json({ message: 'Name, email, and password are required.' });
@@ -23,11 +23,15 @@ router.post('/register', async (req, res, next) => {
       email: email.toLowerCase(),
       password: await bcrypt.hash(password, 10),
     });
+
     res.status(201).json({ token: createToken(user), user: { id: user._id, name: user.name, email: user.email } });
   } catch (error) {
     next(error);
   }
-});
+};
+
+router.post('/register', register);
+router.post('/signup', register);
 
 router.post('/login', async (req, res, next) => {
   try {

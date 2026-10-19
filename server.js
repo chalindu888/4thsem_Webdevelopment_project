@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 
+dotenv.config({ path: require('path').join(__dirname, 'backend', '.env') });
 dotenv.config({ path: require('path').join(__dirname, 'new.env') });
 connectDB();
 

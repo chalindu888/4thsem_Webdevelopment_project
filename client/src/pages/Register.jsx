@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import api from '../api/client'
 
@@ -7,6 +7,7 @@ function Register() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
+  const navigate = useNavigate()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -27,7 +28,8 @@ function Register() {
         password: form.password,
       })
       localStorage.setItem('secureai_token', data.token)
-      setMessage('Account created successfully.')
+      localStorage.setItem('user', JSON.stringify(data.user))
+      navigate('/dashboard')
     } catch (requestError) {
       setError(requestError.response?.data?.message || 'Unable to create your account. Please try again.')
     } finally {

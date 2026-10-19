@@ -1,13 +1,12 @@
-import API from './axios'; // උඩින් හැදූ axios file එක import කරගැනීම
+import API from './axios.js';
 
-// 1. Signup Request එක යැවීම
+// 1. Signup / Register Request එක යැවීම
 export const registerUser = async (userData) => {
   try {
-    const response = await API.post('/auth/signup', userData);
-    return response.data; // සාර්ථක වුނොත් ලැබෙන መልශය
+    const response = await API.post('/auth/register', userData); // මෙහි /signup වෙනුවට /register දමන්න
+    return response.data; 
   } catch (error) {
-    // Backend එකෙන් එන Error පණිවිඩය ලබා ගැනීම
-    throw error.response?.data || { message: 'Server Error එකක් සිදුවිය.' };
+    throw error.response?.data || { message: 'සර්වර් එකේ දෝෂයක් සිදුවිය.' };
   }
 };
 

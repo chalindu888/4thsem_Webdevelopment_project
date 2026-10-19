@@ -23,7 +23,8 @@ function Login() {
     try {
       const { data } = await api.post('/auth/login', form)
       localStorage.setItem('secureai_token', data.token)
-      setMessage('Signed in successfully.')
+      localStorage.setItem('user', JSON.stringify(data.user))
+      navigate('/dashboard')
     } catch (requestError) {
       setError(requestError.response?.data?.message || 'Unable to sign in. Please try again.')
     } finally {

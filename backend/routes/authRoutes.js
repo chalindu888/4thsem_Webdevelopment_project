@@ -6,12 +6,18 @@ const User = require('../models/User');
 const router = express.Router();
 
 // --- SIGNUP (නව ගිණුමක් තැනීම) ---
-router.post('/signup', async (req, res) => {
+const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Name, email, and password are required.' });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters.' });
+    }
 
     // Email එක කලින් භාවිතා කර ඇත්දැයි බැලීම
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email: email.toLowerCase() });
     if (user) {
       return res.status(400).json({ message: 'මෙම Email එක දැනටමත් ලියාපදිංචි කර ඇත.' });
     }
@@ -23,18 +29,26 @@ router.post('/signup', async (req, res) => {
     // නව User කෙනෙකු සාදා Database එකට Save කිරීම
     user = new User({
       name,
-      email,
+      email: email.toLowerCase(),
       password: hashedPassword
     });
 
     await user.save();
-    res.status(201).json({ message: 'ලියාපදිංචිය සාර්ථකයි!' });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(201).json({
+      message: 'ලියාපදිංචිය සාර්ථකයි!',
+      token,
+      user: { id: user._id, name: user.name, email: user.email }
+    });
 
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server Error එකක් සිදුවිය.' });
   }
-});
+};
+
+router.post('/signup', signup);
+router.post('/register', signup);
 
 // --- LOGIN (ගිණුමකට ඇතුළු වීම) ---
 router.post('/login', async (req, res) => {
