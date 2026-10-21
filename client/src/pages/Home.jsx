@@ -1,97 +1,12 @@
-import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import heroImage from '../assets/hero.png'
+import Navbar from '../components/Navbar'
 import '../App.css'
 
 function Home() {
-  const navigate = useNavigate()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [userName, setUserName] = useState('')
-
-  // Check auth state on mount
-  useEffect(() => {
-    const token = localStorage.getItem('secureai_token')
-    const user = localStorage.getItem('user')
-    if (token) {
-      setIsLoggedIn(true)
-      try {
-        const userData = JSON.parse(user)
-        setUserName(userData?.name || 'User')
-      } catch {
-        setUserName('User')
-      }
-    }
-  }, [])
-
-  const userInitials = userName
-    .split(' ')
-    .filter(Boolean)
-    .map((word) => word[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2) || 'U'
-
-  // Sign Out handler
-  const handleSignOut = () => {
-    localStorage.removeItem('secureai_token')
-    localStorage.removeItem('user')
-    setIsLoggedIn(false)
-    setUserName('')
-    navigate('/login')
-  }
-
   return (
     <div className="app">
-      {/* ================= NAVBAR ================= */}
-      <header className="navbar">
-        <div className="container navbar-content">
-          <div className="brand">
-            <img className="brand-image" src="/security.jpg" alt="" />
-
-            <div>
-              <h2>SecureAI</h2>
-              <span>Security Awareness Platform</span>
-            </div>
-          </div>
-
-          <nav className="nav-links">
-            <a href="#home">Home</a>
-            <a href="#features">Features</a>
-            <a href="#assessment">Assessment</a>
-            <a href="#awareness">Awareness</a>
-            <a href="#about">About</a>
-          </nav>
-
-          <div className="nav-actions">
-            {isLoggedIn ? (
-              <>
-                <Link to="/profile" className="nav-profile" title="View your profile">
-                  <span className="nav-avatar" aria-hidden="true">{userInitials}</span>
-                  <span className="nav-greeting">Hello, {userName}</span>
-                </Link>
-
-                <Link to="/dashboard" className="button-link">
-                  <button className="login-btn">Dashboard</button>
-                </Link>
-
-                <button className="signout-btn" onClick={handleSignOut}>
-                  Sign Out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="button-link">
-                  <button className="login-btn">Login</button>
-                </Link>
-
-                <Link to="/register" className="button-link">
-                  <button className="primary-btn">Get Started</button>
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       <main>
         {/* ================= HERO ================= */}
@@ -246,36 +161,42 @@ function Home() {
               <FeatureCard
                 icon=""
                 title="Security Risk Assessment"
+                to="/assessment"
                 description="Complete an intelligent questionnaire that evaluates your security habits across multiple cybersecurity categories."
               />
 
               <FeatureCard
                 icon=""
                 title="AI Recommendations"
+                to="/results"
                 description="Receive personalized security recommendations based on the weaknesses detected during your assessment."
               />
 
               <FeatureCard
                 icon=""
                 title="Awareness Training"
+                to="/awareness"
                 description="Learn important cybersecurity concepts through structured security awareness learning modules."
               />
 
               <FeatureCard
                 icon=""
                 title="Risk Dashboard"
+                to="/dashboard"
                 description="Monitor your security score, assessment history, weak areas and improvement progress."
               />
 
               <FeatureCard
                 icon=""
                 title="Knowledge Quizzes"
+                to="/awareness"
                 description="Test your knowledge after completing security awareness modules and monitor your learning progress."
               />
 
               <FeatureCard
                 icon=""
                 title="Threat Awareness"
+                to="/awareness/phishing-awareness"
                 description="Improve your ability to recognize phishing, social engineering, malware and modern AI-based threats."
               />
             </div>
@@ -531,7 +452,7 @@ function Home() {
    REUSABLE COMPONENTS
 ===================================================== */
 
-function FeatureCard({ icon, title, description }) {
+function FeatureCard({ icon, title, description, to }) {
   return (
     <div className="feature-card">
       <div className="feature-icon">{icon}</div>
@@ -540,9 +461,10 @@ function FeatureCard({ icon, title, description }) {
 
       <p>{description}</p>
 
-      <button>
+      {/* The link's ::after stretches over the card, so the whole card is clickable */}
+      <Link to={to} className="feature-link" aria-label={`Learn more about ${title}`}>
         Learn More <span>→</span>
-      </button>
+      </Link>
     </div>
   )
 }

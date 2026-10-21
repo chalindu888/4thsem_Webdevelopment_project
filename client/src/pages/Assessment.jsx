@@ -1,6 +1,7 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import api, { clearSession, getErrorMessage } from '../api/client'
+import Navbar from '../components/Navbar'
 
 function Assessment() {
   const navigate = useNavigate()
@@ -35,13 +36,7 @@ function Assessment() {
 
   return (
     <div className="simple-page">
-      <div className="simple-navbar">
-        <Link to="/" className="simple-brand">
-           SecureAI
-        </Link>
-
-        <Link to="/dashboard">Dashboard</Link>
-      </div>
+      <Navbar />
 
       <main className="placeholder-page">
         <div className="placeholder-icon">📋</div>

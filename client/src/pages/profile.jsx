@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import Navbar from '../components/Navbar'
+import { notifySessionChange } from '../services/session'
 
 function Profile() {
   const navigate = useNavigate()
@@ -51,6 +53,7 @@ function Profile() {
     const updatedUser = { ...user, name: nameInput.trim() }
     setUser(updatedUser)
     localStorage.setItem('user', JSON.stringify(updatedUser))
+    notifySessionChange()
 
     setSaveMessage('Profile details successfully updated!')
     setTimeout(() => setSaveMessage(''), 3000)
@@ -78,20 +81,7 @@ function Profile() {
   return (
     <div className="simple-page">
       {/* ================= NAVBAR ================= */}
-      <header className="simple-navbar">
-        <Link to="/" className="simple-brand">
-          🛡️ SecureAI
-        </Link>
-
-        <div>
-          <Link to="/dashboard">Dashboard</Link>
-          <Link to="/assessment">Assessment</Link>
-          <Link to="/awareness">Awareness</Link>
-          <button className="signout-btn" onClick={handleSignOut}>
-            Sign Out
-          </button>
-        </div>
-      </header>
+      <Navbar />
 
       <main className="dashboard-container">
         {/* ================= BREADCRUMB / HEADING ================= */}

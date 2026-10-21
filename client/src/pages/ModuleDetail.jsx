@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import modules, { getModuleById } from '../data/modules'
+import Navbar from '../components/Navbar'
 
 function ModuleDetail() {
   const { moduleId } = useParams()
@@ -8,7 +9,7 @@ function ModuleDetail() {
   if (!module) {
     return (
       <div className="simple-page">
-        <ModuleNavbar />
+        <Navbar />
 
         <main className="placeholder-page">
           <span className="section-tag">MODULE NOT FOUND</span>
@@ -31,7 +32,7 @@ function ModuleDetail() {
 
   return (
     <div className="simple-page">
-      <ModuleNavbar />
+      <Navbar />
 
       <main className="module-detail">
         <Link to="/awareness" className="module-back-link">
@@ -93,21 +94,6 @@ function ModuleDetail() {
           )}
         </nav>
       </main>
-    </div>
-  )
-}
-
-function ModuleNavbar() {
-  return (
-    <div className="simple-navbar">
-      <Link to="/" className="simple-brand">
-         SecureAI
-      </Link>
-
-      <div>
-        <Link to="/awareness">Modules</Link>
-        <Link to="/dashboard">Dashboard</Link>
-      </div>
     </div>
   )
 }
