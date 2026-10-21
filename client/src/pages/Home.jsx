@@ -23,6 +23,14 @@ function Home() {
     }
   }, [])
 
+  const userInitials = userName
+    .split(' ')
+    .filter(Boolean)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2) || 'U'
+
   // Sign Out handler
   const handleSignOut = () => {
     localStorage.removeItem('secureai_token')
@@ -57,7 +65,10 @@ function Home() {
           <div className="nav-actions">
             {isLoggedIn ? (
               <>
-                <span className="nav-greeting">Hello, {userName}</span>
+                <Link to="/profile" className="nav-profile" title="View your profile">
+                  <span className="nav-avatar" aria-hidden="true">{userInitials}</span>
+                  <span className="nav-greeting">Hello, {userName}</span>
+                </Link>
 
                 <Link to="/dashboard" className="button-link">
                   <button className="login-btn">Dashboard</button>

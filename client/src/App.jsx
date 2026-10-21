@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard'
 import Assessment from './pages/Assessment'
 import Results from './pages/Results'
 import Awareness from './pages/Awareness'
+import ModuleDetail from './pages/ModuleDetail'
 import Profile from './pages/profile'
 import Admin from './pages/Admin'
 import NotFound from './pages/NotFound'
@@ -31,6 +32,7 @@ function App() {
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/results" element={<Results />} />
           <Route path="/awareness" element={<Awareness />} />
+          <Route path="/awareness/:moduleId" element={<ModuleDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/admin" element={<Admin />} />
         </Route>
