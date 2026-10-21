@@ -1,16 +1,11 @@
 import { Link } from 'react-router-dom'
 import modules from '../data/modules'
+import Navbar from '../components/Navbar'
 
 function Awareness() {
   return (
     <div className="simple-page">
-      <div className="simple-navbar">
-        <Link to="/" className="simple-brand">
-           SecureAI
-        </Link>
-
-        <Link to="/dashboard">Dashboard</Link>
-      </div>
+      <Navbar />
 
       <main className="awareness-container">
         <div className="page-heading">

@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import api, { clearSession, getErrorMessage } from '../api/client'
+import Navbar from '../components/Navbar'
 
 const ANSWER_LABELS = {
   passwordHabits: {
@@ -50,13 +51,7 @@ function Results() {
 
   return (
     <div className="simple-page">
-      <div className="simple-navbar">
-        <Link to="/" className="simple-brand">
-           SecureAI
-        </Link>
-
-        <Link to="/dashboard">Dashboard</Link>
-      </div>
+      <Navbar />
 
       <main className="placeholder-page">
         <div className="placeholder-icon"></div>

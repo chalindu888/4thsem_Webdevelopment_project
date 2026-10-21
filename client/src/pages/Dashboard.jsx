@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import Navbar from '../components/Navbar'
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -23,13 +24,6 @@ function Dashboard() {
     }
   }, [navigate])
 
-  // Sign Out handler
-  const handleSignOut = () => {
-    localStorage.removeItem('secureai_token')
-    localStorage.removeItem('user')
-    navigate('/login')
-  }
-
   // Derive first name for the greeting
   const firstName = user?.name?.split(' ')[0] || 'User'
 
@@ -49,20 +43,7 @@ function Dashboard() {
   return (
     <div className="simple-page">
       {/* ================= DASHBOARD NAVBAR ================= */}
-      <div className="simple-navbar">
-        <Link to="/" className="simple-brand">
-          🛡 SecureAI
-        </Link>
-
-        <div>
-          <Link to="/assessment">Assessment</Link>
-          <Link to="/awareness">Awareness</Link>
-          <Link to="/profile">Profile</Link>
-          <button className="signout-btn" onClick={handleSignOut}>
-            Sign Out
-          </button>
-        </div>
-      </div>
+      <Navbar />
 
       <main className="dashboard-container">
         {/* ================= WELCOME SECTION ================= */}
