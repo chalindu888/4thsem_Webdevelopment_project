@@ -23,6 +23,10 @@ const toResponse = (assessment) => ({
   twoFactorAuth: assessment.twoFactorAuth,
   riskScore: assessment.riskScore,
   riskLevel: assessment.riskLevel,
+  // Per-category score (0-100) using the same weights as the overall score.
+  breakdown: Object.fromEntries(
+    Object.keys(ANSWER_SCORES).map((field) => [field, ANSWER_SCORES[field][assessment[field]]]),
+  ),
   createdAt: assessment.createdAt,
 });
 

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import api, { clearSession, getErrorMessage } from '../api/client'
 import { notifySessionChange } from '../services/session'
+import { statusOf } from '../services/assessmentStatus'
 import './profile.css'
 
 const TABS = [
@@ -10,18 +11,6 @@ const TABS = [
   { id: 'security', label: 'Security' },
   { id: 'activity', label: 'Activity' },
 ]
-
-// Maps stored assessment answers to a label and a status tone (success / warning / danger).
-const STATUS = {
-  riskLevel: {
-    'LOW RISK': ['Low risk', 'success'],
-    'MEDIUM RISK': ['Medium risk', 'warning'],
-    'HIGH RISK': ['High risk', 'danger'],
-  },
-  passwordHabits: { strong: ['Strong', 'success'], mixed: ['Fair', 'warning'], weak: ['Weak', 'danger'] },
-  phishingAwareness: { high: ['High', 'success'], medium: ['Moderate', 'warning'], low: ['Low', 'danger'] },
-  twoFactorAuth: { enabled: ['Enabled', 'success'], some: ['Partial', 'warning'], none: ['Not enabled', 'danger'] },
-}
 
 const TWO_FACTOR_KEY = 'secureai_2fa_preference'
 
@@ -450,11 +439,6 @@ function ActivityLog({ history, status, error }) {
 /* =====================================================
    SMALL COMPONENTS
 ===================================================== */
-
-function statusOf(field, value) {
-  const [label, tone] = STATUS[field][value] || [value, 'neutral']
-  return { label, tone }
-}
 
 function StatusPill({ label, tone }) {
   return (

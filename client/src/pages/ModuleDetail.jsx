@@ -1,10 +1,13 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import modules, { getModuleById } from '../data/modules'
 import Navbar from '../components/Navbar'
+import { getCompletedModules, setModuleCompleted } from '../services/progress'
 
 function ModuleDetail() {
   const { moduleId } = useParams()
   const module = getModuleById(moduleId)
+  const [completedIds, setCompletedIds] = useState(getCompletedModules)
 
   if (!module) {
     return (
@@ -29,6 +32,7 @@ function ModuleDetail() {
   const index = modules.indexOf(module)
   const previous = modules[index - 1]
   const next = modules[index + 1]
+  const completed = completedIds.includes(module.id)
 
   return (
     <div className="simple-page">
@@ -79,6 +83,19 @@ function ModuleDetail() {
             ))}
           </ul>
         </section>
+
+        <div className="module-complete">
+          <p>{completed ? 'You completed this module.' : 'Finished reading? Mark this module complete to track your progress.'}</p>
+
+          <button
+            type="button"
+            className={completed ? 'module-complete-btn is-done' : 'module-complete-btn'}
+            aria-pressed={completed}
+            onClick={() => setCompletedIds(setModuleCompleted(module.id, !completed))}
+          >
+            {completed ? '✓ Completed' : 'Mark as complete'}
+          </button>
+        </div>
 
         <nav className="module-pagination">
           {previous ? (
