@@ -306,9 +306,9 @@ function PostureCard({ latest, status, error }) {
           <ScoreRing score={latest.riskScore} tone={statusOf('riskLevel', latest.riskLevel).tone} />
 
           <ul className="pf-posture-list">
-            <PostureItem label="Password habits" {...statusOf('passwordHabits', latest.passwordHabits)} />
-            <PostureItem label="Phishing awareness" {...statusOf('phishingAwareness', latest.phishingAwareness)} />
-            <PostureItem label="Two-factor authentication" {...statusOf('twoFactorAuth', latest.twoFactorAuth)} />
+            <PostureItem title="Password habits" {...statusOf('passwordHabits', latest.passwordHabits)} />
+            <PostureItem title="Phishing awareness" {...statusOf('phishingAwareness', latest.phishingAwareness)} />
+            <PostureItem title="Two-factor authentication" {...statusOf('twoFactorAuth', latest.twoFactorAuth)} />
           </ul>
         </div>
       )}
@@ -458,11 +458,11 @@ function HeroStat({ label, value }) {
   )
 }
 
-function PostureItem({ label, tone, ...status }) {
+function PostureItem({ title, ...status }) {
   return (
     <li className="pf-posture-item">
-      <span>{label}</span>
-      <StatusPill tone={tone} {...status} />
+      <span>{title}</span>
+      <StatusPill {...status} />
     </li>
   )
 }

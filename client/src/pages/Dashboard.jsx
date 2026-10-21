@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import api, { clearSession, getErrorMessage } from '../api/client'
 import modules from '../data/modules'
 import { getCompletedModules } from '../services/progress'
 import { statusOf, toneForScore } from '../services/assessmentStatus'
+import { createTilt } from '../utils/tilt'
 import './dashboard.css'
 
 const CATEGORIES = [
@@ -32,8 +33,12 @@ const ADVICE = {
   },
 }
 
+const statTilt = createTilt(8)
+const quickTilt = createTilt(6)
+
 const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 }
 const PRIORITY_TONE = { high: 'danger', medium: 'warning', low: 'neutral' }
+const TONE_ACCENT = { success: 'emerald', warning: 'amber', danger: 'rose', neutral: 'slate' }
 
 function readFirstName() {
   try {
@@ -104,6 +109,22 @@ function Dashboard() {
   const [history, setHistory] = useState([])
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
+  const [quickVisible, setQuickVisible] = useState(false)
+  const quickRef = useRef(null)
+
+  // Reveal the quick actions when they scroll into view instead of animating off-screen.
+  useEffect(() => {
+    const section = quickRef.current
+    if (!section || !('IntersectionObserver' in window)) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setQuickVisible(true)
+        observer.disconnect()
+      }
+    }, { threshold: 0.15 })
+    observer.observe(section)
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     api.get('/assessment')
@@ -134,13 +155,15 @@ function Dashboard() {
       <Navbar />
 
       <main className="db-container">
+        <div className="db-glow" aria-hidden="true" />
+
         {/* ================= HEADER ================= */}
         <header className="db-header">
           <div>
             <p className="db-eyebrow">
               {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
             </p>
-            <h1>{greeting()}, {firstName}</h1>
+            <h1>{greeting()}, <span className="db-name">{firstName}</span></h1>
             <p className="db-subtitle">
               {latest
                 ? `Your last security assessment was ${timeAgo(latest.createdAt)}.`
@@ -171,8 +194,11 @@ function Dashboard() {
           <StatCard
             label="Security score"
             icon="shield"
+            accent="teal"
             loading={loading}
-            value={latest ? latest.riskScore : '—'}
+            index={0}
+            value={latest ? <CountUp value={latest.riskScore} delay={200} /> : '—'}
+            aside={latest && <ScoreGauge score={latest.riskScore} />}
             unit={latest ? '/100' : null}
             footer={
               scoreChange !== null ? (
@@ -188,22 +214,28 @@ function Dashboard() {
           <StatCard
             label="Risk level"
             icon="activity"
+            accent={latest ? TONE_ACCENT[statusOf('riskLevel', latest.riskLevel).tone] : 'slate'}
             loading={loading}
-            value={latest ? <Pill {...statusOf('riskLevel', latest.riskLevel)} large /> : '—'}
+            index={1}
+            value={latest ? <Pill {...statusOf('riskLevel', latest.riskLevel)} large live /> : '—'}
             footer={<span>{latest ? `${history.length} assessment${history.length === 1 ? '' : 's'} on record` : 'Take an assessment to find out'}</span>}
           />
 
           <StatCard
             label="Modules completed"
             icon="book"
-            value={completedCount}
+            accent="indigo"
+            index={2}
+            value={<CountUp value={completedCount} delay={300} />}
             unit={`/${modules.length}`}
-            footer={<Meter value={(completedCount / modules.length) * 100} tone="accent" label="Module completion" />}
+            footer={<Meter value={(completedCount / modules.length) * 100} tone="indigo" label="Module completion" delay={400} />}
           />
 
           <StatCard
             label="Quiz average"
             icon="check"
+            accent="amber"
+            index={3}
             value="—"
             footer={<Pill label="Quizzes coming soon" tone="neutral" />}
           />
@@ -211,8 +243,9 @@ function Dashboard() {
 
         {/* ================= MAIN PANELS ================= */}
         <div className="db-grid">
-          <section className="db-card">
+          <section className="db-card accent-teal">
             <header className="db-card-header">
+              <span className="db-card-icon"><Icon name="shield" /></span>
               <div>
                 <h2>Security risk overview</h2>
                 <p>Category scores from your latest assessment.</p>
@@ -224,6 +257,7 @@ function Dashboard() {
               )}
             </header>
 
+            <div className="db-card-body">
             {loading && <Skeleton rows={3} />}
 
             {status !== 'loading' && !latest && (
@@ -237,64 +271,75 @@ function Dashboard() {
 
             {latest && (
               <ul className="db-risk-list">
-                {CATEGORIES.map(({ field, label }) => {
+                {CATEGORIES.map(({ field, label }, index) => {
                   const score = latest.breakdown?.[field] ?? 0
+                  const delay = 350 + index * 150
                   return (
                     <li key={field} className="db-risk-row">
                       <div className="db-risk-meta">
                         <span>{label}</span>
                         <div>
                           <Pill {...statusOf(field, latest[field])} />
-                          <strong>{score}%</strong>
+                          <strong><CountUp value={score} delay={delay} />%</strong>
                         </div>
                       </div>
-                      <Meter value={score} tone={toneForScore(score)} label={`${label} score`} />
+                      <Meter value={score} tone={toneForScore(score)} label={`${label} score`} delay={delay} />
                     </li>
                   )
                 })}
               </ul>
             )}
+            </div>
           </section>
 
-          <section className="db-card">
+          <section className="db-card accent-violet">
             <header className="db-card-header">
+              <span className="db-card-icon"><Icon name="activity" /></span>
               <div>
                 <h2>Recommended actions</h2>
                 <p>Prioritised by the risk they address.</p>
               </div>
+              {!loading && (
+                <span className="db-count">{recommendations.length}</span>
+              )}
             </header>
 
+            <div className="db-card-body">
             {loading ? (
               <Skeleton rows={3} />
             ) : (
               <ul className="db-actions">
-                {recommendations.map((item) => (
-                  <li key={item.title}>
-                    <Link to={item.to} className="db-action">
-                      <span className={`db-action-marker tone-${PRIORITY_TONE[item.priority]}`} />
+                {recommendations.map((item, index) => (
+                  <li key={item.title} style={{ '--i': index }}>
+                    <Link to={item.to} className={`db-action priority-${item.priority}`}>
                       <div className="db-action-text">
                         <strong>{item.title}</strong>
                         <p>{item.description}</p>
                       </div>
-                      <Pill label={item.priority === 'low' ? 'Suggested' : `${item.priority} priority`} tone={PRIORITY_TONE[item.priority]} />
+                      <Pill
+                        label={item.priority === 'low' ? 'Suggested' : `${item.priority} priority`}
+                        tone={PRIORITY_TONE[item.priority]}
+                        live={item.priority !== 'low'}
+                      />
                       <Icon name="chevron" />
                     </Link>
                   </li>
                 ))}
               </ul>
             )}
+            </div>
           </section>
         </div>
 
         {/* ================= QUICK ACTIONS ================= */}
-        <section className="db-quick">
+        <section ref={quickRef} className={quickVisible ? 'db-quick is-visible' : 'db-quick'}>
           <h2 className="db-section-label">Quick actions</h2>
 
           <div className="db-quick-grid">
-            <QuickLink to="/assessment" icon="clipboard" title="New assessment" text="Evaluate your current security habits" />
-            <QuickLink to="/awareness" icon="book" title="Learning modules" text={`${modules.length - completedCount} of ${modules.length} modules left to complete`} />
-            <QuickLink to="/results" icon="chart" title="Latest results" text="Review your most recent report" />
-            <QuickLink to="/profile" icon="user" title="Profile & security" text="Manage your account and activity" />
+            <QuickLink index={0} accent="teal" to="/assessment" icon="clipboard" title="New assessment" text="Evaluate your current security habits" />
+            <QuickLink index={1} accent="indigo" to="/awareness" icon="book" title="Learning modules" text={`${modules.length - completedCount} of ${modules.length} modules left to complete`} />
+            <QuickLink index={2} accent="sky" to="/results" icon="chart" title="Latest results" text="Review your most recent report" />
+            <QuickLink index={3} accent="violet" to="/profile" icon="user" title="Profile & security" text="Manage your account and activity" />
           </div>
         </section>
       </main>
@@ -306,9 +351,34 @@ function Dashboard() {
    REUSABLE COMPONENTS
 ===================================================== */
 
-function StatCard({ label, icon, value, unit, footer, loading }) {
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+// Counts from 0 up to `value` with an ease-out curve.
+function CountUp({ value, duration = 1000, delay = 0 }) {
+  const [display, setDisplay] = useState(0)
+
+  useEffect(() => {
+    if (prefersReducedMotion) return
+    let frame
+    let start
+
+    const tick = (now) => {
+      start ??= now + delay
+      const progress = Math.min(Math.max((now - start) / duration, 0), 1)
+      setDisplay(Math.round(value * (1 - (1 - progress) ** 3)))
+      if (progress < 1) frame = requestAnimationFrame(tick)
+    }
+
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [value, duration, delay])
+
+  return prefersReducedMotion ? value : display
+}
+
+function StatCard({ label, icon, accent = 'slate', value, unit, aside, footer, loading, index = 0 }) {
   return (
-    <article className="db-stat">
+    <article className={`db-stat accent-${accent}`} style={{ '--i': index }} {...statTilt}>
       <div className="db-stat-top">
         <span className="db-label">{label}</span>
         <span className="db-stat-icon"><Icon name={icon} /></span>
@@ -318,9 +388,12 @@ function StatCard({ label, icon, value, unit, footer, loading }) {
         <Skeleton rows={2} />
       ) : (
         <>
-          <div className="db-stat-value">
-            {value}
-            {unit && <span className="db-stat-unit">{unit}</span>}
+          <div className="db-stat-row">
+            <div className="db-stat-value">
+              {value}
+              {unit && <span className="db-stat-unit">{unit}</span>}
+            </div>
+            {aside}
           </div>
           <div className="db-stat-footer">{footer}</div>
         </>
@@ -329,16 +402,30 @@ function StatCard({ label, icon, value, unit, footer, loading }) {
   )
 }
 
-function Pill({ label, tone, large }) {
+// Small ring that draws itself in up to the score.
+function ScoreGauge({ score }) {
+  const radius = 16
+  const circumference = 2 * Math.PI * radius
   return (
-    <span className={`db-pill tone-${tone}${large ? ' db-pill-lg' : ''}`}>
+    <svg className="db-gauge" viewBox="0 0 40 40" aria-hidden="true" style={{ '--offset': circumference * (1 - score / 100), '--length': circumference }}>
+      <circle className="db-gauge-track" cx="20" cy="20" r={radius} />
+      <circle className="db-gauge-value" cx="20" cy="20" r={radius} strokeDasharray={circumference} />
+    </svg>
+  )
+}
+
+// `live` adds a soft pulsing ring around the dot.
+function Pill({ label, tone, large, live }) {
+  return (
+    <span className={`db-pill tone-${tone}${large ? ' db-pill-lg' : ''}${live ? ' is-live' : ''}`}>
       <span className="db-pill-dot" />
       {label}
     </span>
   )
 }
 
-function Meter({ value, tone, label }) {
+// The fill animates from 0 to `value` after `delay` ms (see .db-meter in dashboard.css).
+function Meter({ value, tone, label, delay = 0 }) {
   return (
     <div
       className={`db-meter tone-${tone}`}
@@ -348,14 +435,14 @@ function Meter({ value, tone, label }) {
       aria-valuemax={100}
       aria-valuenow={Math.round(value)}
     >
-      <span style={{ width: `${value}%` }} />
+      <span style={{ '--value': `${value}%`, '--delay': `${delay}ms` }} />
     </div>
   )
 }
 
-function QuickLink({ to, icon, title, text }) {
+function QuickLink({ to, icon, title, text, accent = 'slate', index = 0 }) {
   return (
-    <Link to={to} className="db-quick-card">
+    <Link to={to} className={`db-quick-card accent-${accent}`} style={{ '--i': index }} {...quickTilt}>
       <span className="db-quick-icon"><Icon name={icon} /></span>
       <div>
         <strong>{title}</strong>
