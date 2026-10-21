@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   animate,
@@ -13,6 +13,7 @@ import {
   useTransform,
 } from 'framer-motion'
 import Navbar from '../components/Navbar'
+import ScrollReactive from '../components/ScrollReactive'
 import modules from '../data/modules'
 import '../App.css'
 import './home.css'
@@ -20,32 +21,32 @@ import './home.css'
 const EASE = [0.22, 1, 0.36, 1]
 
 const FEATURES = [
-  { icon: 'clipboard', title: 'Risk assessment', file: 'assessment', to: '/assessment', text: 'A short questionnaire that scores your everyday security habits from 0 to 100.' },
-  { icon: 'spark', title: 'Recommendations', file: 'advice', to: '/results', text: 'Advice ranked by the risk it removes, built from your weakest answers.' },
-  { icon: 'book', title: 'Awareness training', file: 'modules', to: '/awareness', text: 'Six practical modules covering phishing, passwords, devices and more.' },
-  { icon: 'chart', title: 'Risk dashboard', file: 'dashboard', to: '/dashboard', text: 'Track your score, weak areas and progress across every assessment.' },
-  { icon: 'check', title: 'Progress tracking', file: 'progress', to: '/awareness', text: 'Mark modules complete and see what is left to learn at a glance.' },
-  { icon: 'alert', title: 'Threat awareness', file: 'threats', to: '/awareness/phishing-awareness', text: 'Spot phishing, social engineering and AI-driven scams before they land.' },
+  { icon: 'clipboard', title: 'Risk check', to: '/assessment', text: 'Score your security habits in 2 minutes.' },
+  { icon: 'spark', title: 'Recommendations', to: '/results', text: 'See what to fix first.' },
+  { icon: 'book', title: 'Lessons', to: '/awareness', text: 'Six short lessons on real threats.' },
+  { icon: 'chart', title: 'Dashboard', to: '/dashboard', text: 'Track your score over time.' },
+  { icon: 'check', title: 'Progress', to: '/awareness', text: 'See what you have finished.' },
+  { icon: 'alert', title: 'Threats', to: '/awareness/phishing-awareness', text: 'Spot phishing and scams early.' },
 ]
 
 const METRICS = [
-  { value: modules.length, label: 'Learning modules' },
-  { value: 2, label: 'Minutes to assess', suffix: ' min' },
-  { value: 100, label: 'Point security score' },
-  { value: 3, label: 'Risk areas analysed' },
+  { value: modules.length, label: 'Lessons' },
+  { value: 2, label: 'To check', suffix: ' min' },
+  { value: 100, label: 'Max score' },
+  { value: 3, label: 'Risk areas' },
 ]
 
 const EXAMPLE_BARS = [
-  { label: 'Password habits', value: 60, tone: 'warning' },
-  { label: 'Phishing awareness', value: 90, tone: 'success' },
-  { label: 'Two-factor authentication', value: 20, tone: 'danger' },
+  { label: 'Passwords', value: 60, tone: 'warning' },
+  { label: 'Phishing', value: 90, tone: 'success' },
+  { label: '2FA', value: 20, tone: 'danger' },
 ]
 
 const STEPS = [
-  { title: 'Create your account', text: 'Sign up in seconds and get a private security profile.' },
-  { title: 'Take the assessment', text: 'Answer quick questions about passwords, phishing and 2FA.' },
-  { title: 'See your risk', text: 'Get an overall score plus a breakdown for each area.' },
-  { title: 'Improve and track', text: 'Follow your recommendations and finish the matching modules.' },
+  { title: 'Sign up', text: 'It takes seconds.' },
+  { title: 'Take the check', text: 'Answer 3 quick questions.' },
+  { title: 'See your score', text: 'Find your weak spots.' },
+  { title: 'Improve', text: 'Follow the steps and lessons.' },
 ]
 
 // Staggered entrance: replays every time the group re-enters the viewport.
@@ -62,11 +63,12 @@ function Home() {
   const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30 })
 
   // Hero layers drift at different speeds as the page scrolls (parallax depth).
-  const heroWindowY = useTransform(scrollY, [0, 700], [0, 90])
-  const heroBadgeAY = useTransform(scrollY, [0, 700], [0, -70])
-  const heroBadgeBY = useTransform(scrollY, [0, 700], [0, 150])
   const heroImageY = useTransform(scrollY, [0, 800], [0, 240])
   const heroImageScale = useTransform(scrollY, [0, 800], [1.05, 1.15])
+  // Scrolling "dives" into the hero: it zooms toward the viewer and fades away.
+  const heroDiveScale = useTransform(scrollY, [0, 650], [1, 1.18])
+  const heroDiveOpacity = useTransform(scrollY, [0, 550], [1, 0])
+  const cueOpacity = useTransform(scrollY, [0, 200], [1, 0])
   const parallax = (value) => (reduceMotion ? undefined : value)
 
   return (
@@ -74,6 +76,7 @@ function Home() {
     <MotionConfig reducedMotion="user">
     <div className="hm">
       <motion.div className="hm-progress" style={{ scaleX: progress }} aria-hidden="true" />
+      <DepthNav progress={progress} />
       <Navbar />
 
       <main>
@@ -85,74 +88,50 @@ function Home() {
             <div className="hm-hero-shade" />
           </div>
 
+          <motion.div className="hm-hero-dive" style={{ scale: parallax(heroDiveScale), opacity: parallax(heroDiveOpacity) }}>
           <div className="hm-container hm-hero-grid">
             <motion.div className="hm-hero-copy" variants={group} initial="hidden" animate="show">
               <motion.p className="hm-eyebrow" variants={item}>
                 <span className="hm-eyebrow-dot" />
-                AI-powered cybersecurity awareness
+                Cybersecurity made simple
               </motion.p>
 
               <motion.h1 variants={item}>
-                Understand your <span className="hm-gradient-text">security risk</span> before attackers do
+                Know your <span className="hm-gradient-text">security risk</span> in 2 minutes
               </motion.h1>
 
               <motion.p className="hm-lead" variants={item}>
-                Assess your habits, uncover weak spots and get personalised recommendations that make
-                your digital life measurably safer.
+                Take a quick check, see your weak spots and fix them step by step.
               </motion.p>
 
               <motion.div className="hm-hero-actions" variants={item}>
                 <Link to="/assessment" className="hm-btn hm-btn-primary">
-                  Start free assessment <Icon name="arrow" />
+                  Start free check <Icon name="arrow" />
                 </Link>
-                <Link to="/awareness" className="hm-btn hm-btn-ghost">Explore training</Link>
+                <Link to="/awareness" className="hm-btn hm-btn-ghost">Browse lessons</Link>
               </motion.div>
 
               <motion.dl className="hm-hero-trust" variants={item}>
-                <div><dt>Modules</dt><dd>{modules.length}</dd></div>
-                <div><dt>Score range</dt><dd>0–100</dd></div>
-                <div><dt>Time to assess</dt><dd>~2 min</dd></div>
+                <div><dt>Lessons</dt><dd>{modules.length}</dd></div>
+                <div><dt>Score</dt><dd>0–100</dd></div>
+                <div><dt>Time</dt><dd>~2 min</dd></div>
               </motion.dl>
             </motion.div>
-
-            <div className="hm-hero-stage">
-              <motion.div
-                style={{ y: parallax(heroWindowY) }}
-                initial={{ opacity: 0, y: 40, scale: 0.94 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.9, ease: EASE, delay: 0.2 }}
-              >
-                <AppWindow title="Security overview" url="secureai.app/dashboard" status="Live">
-                  <div className="hm-preview-score">
-                    <ScoreRing score={68} />
-                    <div>
-                      <span className="hm-muted-label">Current risk level</span>
-                      <span className="hm-pill tone-warning">Medium risk</span>
-                    </div>
-                  </div>
-                  <Bars />
-                  <div className="hm-preview-tip">
-                    <Icon name="spark" />
-                    Enable 2FA on email and banking first
-                  </div>
-                </AppWindow>
-              </motion.div>
-
-              <motion.div className="hm-badge-slot hm-badge-a" style={{ y: parallax(heroBadgeAY) }}>
-                <FloatingBadge tone="success" icon="check" title="Phishing link spotted" text="Sender domain mismatch" />
-              </motion.div>
-              <motion.div className="hm-badge-slot hm-badge-b" style={{ y: parallax(heroBadgeBY) }}>
-                <FloatingBadge tone="danger" icon="alert" title="2FA not enabled" text="High priority fix" delay={1.2} />
-              </motion.div>
-            </div>
           </div>
+          </motion.div>
+
+          <motion.a href="#features" className="hm-scroll-cue" style={{ opacity: parallax(cueOpacity) }}>
+            <span className="hm-mouse" aria-hidden="true"><span /></span>
+            Scroll to dive in
+          </motion.a>
         </section>
 
         {/* ================= METRICS ================= */}
         <section className="hm-metrics" aria-label="SecureAI at a glance">
+          <DepthLayer>
           <div className="hm-container">
             <ScrollWindow speed={20}>
-              <AppWindow title="Platform at a glance" compact>
+              <AppWindow title="At a glance" compact>
                 <motion.div className="hm-metrics-grid" variants={group} {...inView}>
                   {METRICS.map((metric) => (
                     <motion.div key={metric.label} className="hm-metric" variants={item}>
@@ -164,15 +143,17 @@ function Home() {
               </AppWindow>
             </ScrollWindow>
           </div>
+          </DepthLayer>
         </section>
 
         {/* ================= FEATURES ================= */}
         <section className="hm-section" id="features">
+          <DepthLayer>
           <div className="hm-container">
             <SectionHeading
               eyebrow="Platform"
-              title={<>Everything you need to <span className="hm-gradient-text">stay secure</span></>}
-              text="Assessment, recommendations and training working together, so every weakness you find comes with a way to fix it."
+              title={<>Everything in <span className="hm-gradient-text">one place</span></>}
+              text="Check, learn and improve — all in one app."
             />
 
             <motion.div className="hm-window-grid" variants={group} {...inView}>
@@ -180,7 +161,7 @@ function Home() {
                 // Middle column drifts faster than the outer ones for depth.
                 <ScrollWindow key={feature.title} speed={index % 3 === 1 ? 70 : 30}>
                   <motion.div variants={item} className="hm-fill">
-                    <AppWindow title={feature.title} url={`${feature.file}.secureai`} interactive>
+                    <AppWindow title={feature.title} interactive>
                       <span className="hm-icon"><Icon name={feature.icon} /></span>
                       <p className="hm-window-text">{feature.text}</p>
                       <Link to={feature.to} className="hm-card-link hm-stretched" aria-label={`Open ${feature.title}`}>
@@ -192,30 +173,32 @@ function Home() {
               ))}
             </motion.div>
           </div>
+          </DepthLayer>
         </section>
 
         {/* ================= RISK VISUALIZER ================= */}
         <section className="hm-section hm-section-tint" id="assessment">
+          <DepthLayer>
           <div className="hm-container">
             <SectionHeading
-              eyebrow="Risk metrics"
+              eyebrow="Your score"
               title={<>See your risk <span className="hm-gradient-text">at a glance</span></>}
-              text="Every assessment produces an overall score and a score per area, so you know exactly where to focus first."
+              text="One score, plus a breakdown for each area."
             />
 
             <div className="hm-visualizer-stage">
               <ScrollWindow speed={50}>
-                <AppWindow title="Risk visualizer" url="secureai.app/results" status="Example" interactive>
+                <AppWindow title="Your results" status="Example" interactive>
                   <div className="hm-visualizer">
                     <div className="hm-visualizer-score">
                       <ScoreRing score={68} large />
                       <span className="hm-pill tone-warning">Medium risk</span>
-                      <p>Overall security score</p>
+                      <p>Your score</p>
                     </div>
                     <div className="hm-visualizer-detail">
                       <Bars />
                       <motion.ul className="hm-checks" variants={group} {...inView}>
-                        {['Prioritised, linked recommendations', 'Score change between assessments', 'Matching training for every weak area'].map((text) => (
+                        {['Clear next steps', 'Track your progress', 'A lesson for each weak spot'].map((text) => (
                           <motion.li key={text} variants={item}>
                             <span className="hm-check"><Icon name="check" /></span>
                             {text}
@@ -228,19 +211,20 @@ function Home() {
               </ScrollWindow>
 
               <ScrollWindow speed={-25} className="hm-badge-slot hm-badge-c">
-                <FloatingBadge tone="success" icon="chart" title="+8 pts" text="since last assessment" delay={0.6} />
+                <FloatingBadge tone="success" icon="chart" title="+8 pts" text="this week" delay={0.6} />
               </ScrollWindow>
             </div>
           </div>
+          </DepthLayer>
         </section>
 
         {/* ================= HOW IT WORKS ================= */}
-        <section className="hm-section">
+        <section className="hm-section" id="steps">
+          <DepthLayer>
           <div className="hm-container">
             <SectionHeading
               eyebrow="How it works"
-              title={<>Four steps to a <span className="hm-gradient-text">safer you</span></>}
-              text="From sign-up to a measurably better score in one sitting."
+              title={<>Four <span className="hm-gradient-text">simple steps</span></>}
             />
 
             <motion.ol className="hm-steps" variants={group} {...inView}>
@@ -253,20 +237,22 @@ function Home() {
               ))}
             </motion.ol>
           </div>
+          </DepthLayer>
         </section>
 
         {/* ================= LEARNING HIGHLIGHTS ================= */}
         <section className="hm-section hm-section-tint" id="awareness">
+          <DepthLayer>
           <div className="hm-container">
             <SectionHeading
-              eyebrow="Awareness training"
+              eyebrow="Lessons"
               title={<>Learn the threats <span className="hm-gradient-text">that matter</span></>}
-              text="Short, practical modules you can finish in a coffee break."
+              text="Short lessons you can finish in minutes."
             />
 
             <div className="hm-learning">
               <ScrollWindow speed={40}>
-                <AppWindow title="Live threat awareness" url="secureai.app/awareness" status="Playing">
+                <AppWindow title="Watch" status="Playing">
                   <div className="hm-video">
                     <video autoPlay muted loop playsInline preload="metadata" aria-label="Security awareness animation">
                       <source src="/security-awareness.mp4" type="video/mp4" />
@@ -276,7 +262,7 @@ function Home() {
               </ScrollWindow>
 
               <ScrollWindow speed={80}>
-                <AppWindow title="Learning modules" url={`${modules.length} modules`} interactive>
+                <AppWindow title={`All lessons (${modules.length})`} interactive>
                   <motion.ul className="hm-module-list" variants={group} {...inView}>
                     {modules.map((module) => (
                       <motion.li key={module.id} variants={item}>
@@ -293,10 +279,12 @@ function Home() {
               </ScrollWindow>
             </div>
           </div>
+          </DepthLayer>
         </section>
 
         {/* ================= CTA ================= */}
-        <section className="hm-section hm-cta-wrap">
+        <section className="hm-section hm-cta-wrap" id="start">
+          <DepthLayer>
           <div className="hm-container">
             <ScrollWindow speed={30}>
               <div className="hm-cta">
@@ -307,8 +295,8 @@ function Home() {
                   transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
                 />
                 <motion.div className="hm-cta-copy" variants={group} {...inView}>
-                  <motion.h2 variants={item}>How secure are your digital habits?</motion.h2>
-                  <motion.p variants={item}>Take the free assessment and get your personal security score in about two minutes.</motion.p>
+                  <motion.h2 variants={item}>How secure are you?</motion.h2>
+                  <motion.p variants={item}>Find out in 2 minutes. It is free.</motion.p>
                   <motion.div variants={item}>
                     <Link to="/assessment" className="hm-btn hm-btn-light">Get started <Icon name="arrow" /></Link>
                   </motion.div>
@@ -316,6 +304,7 @@ function Home() {
               </div>
             </ScrollWindow>
           </div>
+          </DepthLayer>
         </section>
       </main>
 
@@ -327,27 +316,27 @@ function Home() {
               <img src="/security.jpg" alt="" />
               <strong>SecureAI</strong>
             </div>
-            <p>AI security awareness and risk assessment, designed to build safer digital habits.</p>
+            <p>Simple security checks and lessons.</p>
           </div>
 
           <nav className="hm-footer-links" aria-label="Footer">
             <div>
               <strong>Platform</strong>
               <Link to="/assessment">Assessment</Link>
-              <Link to="/awareness">Training</Link>
+              <Link to="/awareness">Lessons</Link>
               <Link to="/dashboard">Dashboard</Link>
             </div>
             <div>
               <strong>Explore</strong>
               <a href="#features">Features</a>
-              <a href="#assessment">Risk metrics</a>
-              <a href="#awareness">Modules</a>
+              <a href="#assessment">Your score</a>
+              <a href="#awareness">Lessons</a>
             </div>
           </nav>
         </div>
 
         <div className="hm-container hm-footer-bottom">
-          <p>© 2026 SecureAI — AI Security Awareness &amp; Risk Assessment System</p>
+          <p>© 2026 SecureAI</p>
         </div>
       </footer>
     </div>
@@ -360,18 +349,12 @@ function Home() {
 ===================================================== */
 
 // Moves along Y at its own speed while scrolling through the viewport, scales into view and fades.
+// Parallax at its own speed, flips into place in 3D, and leans with the scroll wheel.
 function ScrollWindow({ speed = 40, className, children }) {
-  const ref = useRef(null)
-  const reduceMotion = useReducedMotion()
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], [speed, -speed])
-  const scale = useTransform(scrollYProgress, [0, 0.25, 0.8, 1], [0.92, 1, 1, 0.97])
-  const opacity = useTransform(scrollYProgress, [0, 0.18, 0.85, 1], [0, 1, 1, 0.55])
-
   return (
-    <motion.div ref={ref} className={className} style={reduceMotion ? undefined : { y, scale, opacity }}>
+    <ScrollReactive reveal speed={speed} className={className}>
       {children}
-    </motion.div>
+    </ScrollReactive>
   )
 }
 
@@ -410,7 +393,6 @@ function AppWindow({ title, url, status, compact, interactive, children }) {
       {tilt && <motion.div className="hm-window-spotlight" style={{ background: spotlight }} aria-hidden="true" />}
 
       <div className="hm-window-bar">
-        <span className="hm-dots" aria-hidden="true"><span /><span /><span /></span>
         <span className="hm-window-title">{title}</span>
         {url && <span className="hm-window-url">{url}</span>}
         {status && <span className="hm-window-status"><span />{status}</span>}
@@ -438,12 +420,78 @@ function FloatingBadge({ tone, icon, title, text, delay = 0 }) {
   )
 }
 
+// Sections come up from the distance, sharpen in the middle of the screen,
+// then move past the viewer as the next one arrives — scrolling feels like moving deeper.
+function DepthLayer({ children }) {
+  const ref = useRef(null)
+  const reduceMotion = useReducedMotion()
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  const scale = useTransform(scrollYProgress, [0, 0.35, 0.68, 1], [0.86, 1, 1, 1.12])
+  const opacity = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], [0.25, 1, 1, 0])
+
+  return (
+    <motion.div ref={ref} style={reduceMotion ? undefined : { scale, opacity, transformOrigin: 'center 40%' }}>
+      {children}
+    </motion.div>
+  )
+}
+
+const DEPTH_STOPS = [
+  { id: 'home', label: 'Start' },
+  { id: 'features', label: 'Features' },
+  { id: 'assessment', label: 'Your score' },
+  { id: 'steps', label: 'How it works' },
+  { id: 'awareness', label: 'Lessons' },
+  { id: 'start', label: 'Get started' },
+]
+
+// Fixed rail showing how deep into the page you are; click a stop to glide there.
+function DepthNav({ progress }) {
+  const [active, setActive] = useState(DEPTH_STOPS[0].id)
+
+  useEffect(() => {
+    const sections = DEPTH_STOPS.map((stop) => document.getElementById(stop.id)).filter(Boolean)
+    // A section is "current" while it crosses the middle band of the screen.
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => entry.isIntersecting && setActive(entry.target.id)),
+      { rootMargin: '-45% 0px -45% 0px' },
+    )
+    sections.forEach((section) => observer.observe(section))
+    return () => observer.disconnect()
+  }, [])
+
+  const index = DEPTH_STOPS.findIndex((stop) => stop.id === active)
+
+  return (
+    <nav className="hm-depth" aria-label="Page sections">
+      <span className="hm-depth-count">
+        {String(index + 1).padStart(2, '0')}
+        <span> / {String(DEPTH_STOPS.length).padStart(2, '0')}</span>
+      </span>
+      <div className="hm-depth-rail">
+        <motion.span className="hm-depth-fill" style={{ scaleY: progress }} aria-hidden="true" />
+        {DEPTH_STOPS.map((stop) => (
+          <a
+            key={stop.id}
+            href={`#${stop.id}`}
+            className={stop.id === active ? 'hm-depth-stop is-active' : 'hm-depth-stop'}
+            aria-current={stop.id === active ? 'location' : undefined}
+          >
+            <span className="hm-depth-label">{stop.label}</span>
+            <span className="hm-depth-dot" aria-hidden="true" />
+          </a>
+        ))}
+      </div>
+    </nav>
+  )
+}
+
 function SectionHeading({ eyebrow, title, text }) {
   return (
     <motion.header className="hm-heading" variants={group} {...inView}>
       <motion.p className="hm-eyebrow" variants={item}>{eyebrow}</motion.p>
       <motion.h2 variants={item}>{title}</motion.h2>
-      <motion.p className="hm-sub" variants={item}>{text}</motion.p>
+      {text && <motion.p className="hm-sub" variants={item}>{text}</motion.p>}
     </motion.header>
   )
 }

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import ScrollReactive from '../components/ScrollReactive'
 import api, { clearSession, getErrorMessage } from '../api/client'
 import modules from '../data/modules'
 import { getCompletedModules } from '../services/progress'
@@ -9,26 +10,26 @@ import { createTilt } from '../utils/tilt'
 import './dashboard.css'
 
 const CATEGORIES = [
-  { field: 'passwordHabits', label: 'Password habits' },
-  { field: 'phishingAwareness', label: 'Phishing awareness' },
-  { field: 'twoFactorAuth', label: 'Two-factor authentication' },
+  { field: 'passwordHabits', label: 'Passwords' },
+  { field: 'phishingAwareness', label: 'Phishing' },
+  { field: 'twoFactorAuth', label: '2FA' },
 ]
 
 // Advice for each weak answer, linked to the module that covers it.
 const ADVICE = {
   twoFactorAuth: {
-    none: ['high', 'Enable two-factor authentication', 'Start with email, banking and social accounts — they unlock everything else.'],
-    some: ['medium', 'Extend 2FA to every important account', 'Accounts without 2FA are the easiest way in for attackers.'],
+    none: ['high', 'Turn on 2FA', 'Start with email and banking.'],
+    some: ['medium', 'Turn on 2FA everywhere', 'Cover all important accounts.'],
     module: 'password-security',
   },
   passwordHabits: {
-    weak: ['high', 'Stop reusing passwords', 'One breached site exposes every account that shares its password.'],
-    mixed: ['medium', 'Replace your reused passwords', 'A password manager makes unique passwords effortless.'],
+    weak: ['high', 'Stop reusing passwords', 'Use a unique one for each site.'],
+    mixed: ['medium', 'Replace reused passwords', 'A password manager makes it easy.'],
     module: 'password-security',
   },
   phishingAwareness: {
-    low: ['high', 'Complete phishing awareness training', 'Learn the warning signs attackers rely on you missing.'],
-    medium: ['medium', 'Sharpen your phishing detection', 'Review the red flags in messages, links and sender addresses.'],
+    low: ['high', 'Learn to spot phishing', 'Take the short module.'],
+    medium: ['medium', 'Brush up on phishing', 'Review the warning signs.'],
     module: 'phishing-awareness',
   },
 }
@@ -71,7 +72,7 @@ function buildRecommendations(latest, completedIds) {
     return [{
       priority: 'high',
       title: 'Take your first assessment',
-      description: 'Answer three quick questions to get your security score and personalised advice.',
+      description: 'Takes about 2 minutes.',
       to: '/assessment',
     }]
   }
@@ -93,8 +94,8 @@ function buildRecommendations(latest, completedIds) {
     if (recommendations.some((item) => item.to === `/awareness/${module.id}`)) continue
     recommendations.push({
       priority: 'low',
-      title: `Explore ${module.title}`,
-      description: module.summary,
+      title: module.title,
+      description: `${module.duration} · ${module.level}`,
       to: `/awareness/${module.id}`,
     })
   }
@@ -160,14 +161,9 @@ function Dashboard() {
         {/* ================= HEADER ================= */}
         <header className="db-header">
           <div>
-            <p className="db-eyebrow">
-              {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
-            </p>
             <h1>{greeting()}, <span className="db-name">{firstName}</span></h1>
             <p className="db-subtitle">
-              {latest
-                ? `Your last security assessment was ${timeAgo(latest.createdAt)}.`
-                : 'Here’s an overview of your cybersecurity posture and learning progress.'}
+              {latest ? `Last checked ${timeAgo(latest.createdAt)}` : 'Welcome to your security dashboard'}
             </p>
           </div>
 
@@ -190,9 +186,10 @@ function Dashboard() {
         )}
 
         {/* ================= STAT CARDS ================= */}
+        <ScrollReactive lean={0.7}>
         <section className="db-stats" aria-label="Key metrics">
           <StatCard
-            label="Security score"
+            label="Score"
             icon="shield"
             accent="teal"
             loading={loading}
@@ -203,26 +200,26 @@ function Dashboard() {
             footer={
               scoreChange !== null ? (
                 <span className={`db-delta tone-${scoreChange >= 0 ? 'success' : 'danger'}`}>
-                  {scoreChange >= 0 ? '↑' : '↓'} {Math.abs(scoreChange)} pts since last assessment
+                  {scoreChange >= 0 ? '↑' : '↓'} {Math.abs(scoreChange)} pts
                 </span>
               ) : (
-                <span>{latest ? 'Your first assessment' : 'No assessment yet'}</span>
+                <span>{latest ? 'First check' : 'Not checked yet'}</span>
               )
             }
           />
 
           <StatCard
-            label="Risk level"
+            label="Risk"
             icon="activity"
             accent={latest ? TONE_ACCENT[statusOf('riskLevel', latest.riskLevel).tone] : 'slate'}
             loading={loading}
             index={1}
             value={latest ? <Pill {...statusOf('riskLevel', latest.riskLevel)} large live /> : '—'}
-            footer={<span>{latest ? `${history.length} assessment${history.length === 1 ? '' : 's'} on record` : 'Take an assessment to find out'}</span>}
+            footer={<span>{latest ? `${history.length} assessment${history.length === 1 ? '' : 's'}` : 'Not checked yet'}</span>}
           />
 
           <StatCard
-            label="Modules completed"
+            label="Modules"
             icon="book"
             accent="indigo"
             index={2}
@@ -232,23 +229,24 @@ function Dashboard() {
           />
 
           <StatCard
-            label="Quiz average"
+            label="Quizzes"
             icon="check"
             accent="amber"
             index={3}
             value="—"
-            footer={<Pill label="Quizzes coming soon" tone="neutral" />}
+            footer={<Pill label="Coming soon" tone="neutral" />}
           />
         </section>
+        </ScrollReactive>
 
         {/* ================= MAIN PANELS ================= */}
+        <ScrollReactive lean={1}>
         <div className="db-grid">
           <section className="db-card accent-teal">
             <header className="db-card-header">
               <span className="db-card-icon"><Icon name="shield" /></span>
               <div>
-                <h2>Security risk overview</h2>
-                <p>Category scores from your latest assessment.</p>
+                <h2>Your risk areas</h2>
               </div>
               {latest && (
                 <Link to="/results" className="db-link">
@@ -263,8 +261,8 @@ function Dashboard() {
             {status !== 'loading' && !latest && (
               <div className="db-empty">
                 <Icon name="shield" />
-                <strong>No risk data yet</strong>
-                <p>Complete an assessment to see how you score in each category.</p>
+                <strong>No scores yet</strong>
+                <p>Take an assessment to see them.</p>
                 <Link to="/assessment" className="db-btn db-btn-secondary">Start assessment</Link>
               </div>
             )}
@@ -296,8 +294,7 @@ function Dashboard() {
             <header className="db-card-header">
               <span className="db-card-icon"><Icon name="activity" /></span>
               <div>
-                <h2>Recommended actions</h2>
-                <p>Prioritised by the risk they address.</p>
+                <h2>Next steps</h2>
               </div>
               {!loading && (
                 <span className="db-count">{recommendations.length}</span>
@@ -317,7 +314,7 @@ function Dashboard() {
                         <p>{item.description}</p>
                       </div>
                       <Pill
-                        label={item.priority === 'low' ? 'Suggested' : `${item.priority} priority`}
+                        label={{ high: 'High', medium: 'Medium', low: 'Optional' }[item.priority]}
                         tone={PRIORITY_TONE[item.priority]}
                         live={item.priority !== 'low'}
                       />
@@ -330,18 +327,21 @@ function Dashboard() {
             </div>
           </section>
         </div>
+        </ScrollReactive>
 
         {/* ================= QUICK ACTIONS ================= */}
+        <ScrollReactive lean={1.3}>
         <section ref={quickRef} className={quickVisible ? 'db-quick is-visible' : 'db-quick'}>
-          <h2 className="db-section-label">Quick actions</h2>
+          <h2 className="db-section-label">Shortcuts</h2>
 
           <div className="db-quick-grid">
-            <QuickLink index={0} accent="teal" to="/assessment" icon="clipboard" title="New assessment" text="Evaluate your current security habits" />
-            <QuickLink index={1} accent="indigo" to="/awareness" icon="book" title="Learning modules" text={`${modules.length - completedCount} of ${modules.length} modules left to complete`} />
-            <QuickLink index={2} accent="sky" to="/results" icon="chart" title="Latest results" text="Review your most recent report" />
-            <QuickLink index={3} accent="violet" to="/profile" icon="user" title="Profile & security" text="Manage your account and activity" />
+            <QuickLink index={0} accent="teal" to="/assessment" icon="clipboard" title="New assessment" />
+            <QuickLink index={1} accent="indigo" to="/awareness" icon="book" title="Learn" text={`${modules.length - completedCount} modules left`} />
+            <QuickLink index={2} accent="sky" to="/results" icon="chart" title="Results" />
+            <QuickLink index={3} accent="violet" to="/profile" icon="user" title="Profile" />
           </div>
         </section>
+        </ScrollReactive>
       </main>
     </div>
   )
@@ -446,7 +446,7 @@ function QuickLink({ to, icon, title, text, accent = 'slate', index = 0 }) {
       <span className="db-quick-icon"><Icon name={icon} /></span>
       <div>
         <strong>{title}</strong>
-        <p>{text}</p>
+        {text && <p>{text}</p>}
       </div>
       <Icon name="arrow" />
     </Link>

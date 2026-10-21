@@ -240,22 +240,6 @@
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
 }
 
-.hm-dots {
-  display: inline-flex;
-  gap: 6px;
-}
-
-.hm-dots span {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: #fda4af;
-  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.06);
-}
-
-.hm-dots span:nth-child(2) { background: #fcd34d; }
-.hm-dots span:nth-child(3) { background: #86efac; }
-
 .hm-window-title {
   overflow: hidden;
   color: var(--hm-ink);
@@ -602,7 +586,7 @@
 .hm-hero-grid {
   position: relative;
   display: grid;
-  grid-template-columns: 1.05fr 1fr;
+  grid-template-columns: minmax(0, 720px);
   align-items: center;
   gap: 64px;
 }
@@ -1216,4 +1200,350 @@
 
 .hm-footer-bottom p {
   color: rgba(255, 255, 255, 0.45);
+}
+
+/* =====================================================
+   READABILITY — friendlier font and larger type (matches the dashboard)
+===================================================== */
+
+.hm {
+  font-family: 'Plus Jakarta Sans', 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+.hm-eyebrow {
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+
+.hm-hero h1 {
+  font-size: clamp(44px, 6vw, 76px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.hm-lead {
+  font-size: 21px;
+}
+
+.hm-btn {
+  height: 52px;
+  padding: 0 26px;
+  font-size: 16px;
+}
+
+.hm-hero-trust dt {
+  font-size: 13px;
+}
+
+.hm-hero-trust dd {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.hm-heading h2 {
+  font-size: clamp(34px, 4.6vw, 54px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.hm-sub {
+  font-size: 19px;
+}
+
+/* Windows */
+.hm-window-bar {
+  height: 48px;
+}
+
+.hm-window-title {
+  font-size: 15px;
+}
+
+.hm-window-text {
+  font-size: 17px;
+}
+
+.hm-card-link {
+  font-size: 16px;
+}
+
+.hm-muted-label {
+  font-size: 15px;
+}
+
+.hm-pill {
+  height: 30px;
+  padding: 0 13px;
+  font-size: 14px;
+}
+
+.hm-bars li > div {
+  font-size: 15px;
+}
+
+.hm-bar {
+  height: 8px;
+}
+
+.hm-preview-tip {
+  font-size: 15px;
+}
+
+.hm-badge strong {
+  font-size: 16px;
+}
+
+.hm-badge span:not(.hm-badge-icon) {
+  font-size: 13px;
+}
+
+.hm-metric strong {
+  font-size: 40px;
+}
+
+.hm-metric > span {
+  font-size: 16px;
+}
+
+.hm-checks li {
+  font-size: 17px;
+}
+
+.hm-visualizer-score p {
+  font-size: 15px;
+}
+
+.hm-step h3 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.hm-step p {
+  font-size: 16px;
+}
+
+.hm-module-row strong {
+  font-size: 16px;
+}
+
+.hm-module-time {
+  font-size: 14px;
+}
+
+.hm-level {
+  font-size: 12px;
+}
+
+.hm-cta h2 {
+  font-size: clamp(36px, 4.8vw, 58px);
+  font-weight: 800;
+}
+
+.hm-cta p {
+  font-size: 19px;
+}
+
+.hm-footer-brand p,
+.hm-footer-links a {
+  font-size: 15px;
+}
+
+.hm-footer-links strong {
+  font-size: 14px;
+}
+
+/* =====================================================
+   DEPTH SCROLLING — hero dive, scroll cue and the section navigator
+===================================================== */
+
+/* Jumping to a section leaves room for the sticky navbar */
+.hm section[id] {
+  scroll-margin-top: 72px;
+}
+
+.hm-hero-dive {
+  transform-origin: 50% 35%;
+}
+
+/* "Scroll to dive in" cue */
+.hm-scroll-cue {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+}
+
+.hm-scroll-cue:hover {
+  color: white;
+}
+
+.hm-mouse {
+  position: relative;
+  width: 24px;
+  height: 38px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 14px;
+}
+
+.hm-mouse span {
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  width: 4px;
+  height: 8px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--accent-gradient);
+  animation: hm-wheel 1.8s ease-in-out infinite;
+}
+
+@keyframes hm-wheel {
+  0% { opacity: 0; transform: translateY(-2px); }
+  30% { opacity: 1; }
+  80% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 0; }
+}
+
+/* Depth navigator (fixed rail on the right) */
+.hm-depth {
+  position: fixed;
+  top: 50%;
+  right: 28px;
+  z-index: 40;
+  display: grid;
+  justify-items: end;
+  gap: 14px;
+  transform: translateY(-50%);
+}
+
+.hm-depth-count {
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.hm-depth-count span {
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+}
+
+.hm-depth-rail {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  padding: 4px 0;
+}
+
+/* Track + fill behind the dots */
+.hm-depth-rail::before,
+.hm-depth-fill {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 5px;
+  bottom: 8px;
+  width: 2px;
+  border-radius: 2px;
+}
+
+.hm-depth-rail::before {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.hm-depth-fill {
+  background: var(--accent-gradient);
+  transform-origin: top;
+}
+
+.hm-depth-stop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+}
+
+.hm-depth-dot {
+  position: relative;
+  z-index: 1;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: #121419;
+  transition: transform 300ms ease-out, background 300ms ease-out, border-color 300ms ease-out, box-shadow 300ms ease-out;
+}
+
+.hm-depth-label {
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(17, 19, 24, 0.85);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(8px);
+  backdrop-filter: blur(8px);
+  transition: opacity 250ms ease-out, transform 250ms ease-out;
+}
+
+.hm-depth-stop:hover .hm-depth-label,
+.hm-depth-stop:focus-visible .hm-depth-label,
+.hm-depth-stop.is-active .hm-depth-label {
+  opacity: 1;
+  transform: none;
+}
+
+.hm-depth-stop:hover .hm-depth-dot {
+  border-color: white;
+  transform: scale(1.2);
+}
+
+.hm-depth-stop.is-active {
+  color: white;
+}
+
+.hm-depth-stop.is-active .hm-depth-dot {
+  border-color: transparent;
+  background: var(--accent-gradient);
+  box-shadow: 0 0 0 4px rgba(229, 32, 47, 0.2), 0 0 14px var(--accent-glow);
+  transform: scale(1.25);
+}
+
+.hm-depth-stop:focus-visible {
+  outline: none;
+}
+
+.hm-depth-stop:focus-visible .hm-depth-dot {
+  box-shadow: 0 0 0 3px white;
+}
+
+/* Only the active label stays visible on narrower desktops */
+@media (max-width: 1360px) {
+  .hm-depth-stop.is-active:not(:hover) .hm-depth-label {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .hm-depth {
+    display: none;
+  }
+
+  .hm-scroll-cue {
+    bottom: 72px;
+  }
 }
