@@ -1,0 +1,612 @@
+/* =====================================================
+   LEARNING MODULES (pages/Awareness.jsx)
+===================================================== */
+
+.aw {
+  --aw-900: #e0e1e4;
+  --aw-700: #c0c2c9;
+  --aw-600: #afb2bb;
+  --aw-500: #969aa6;
+  --aw-400: #757a8a;
+  --aw-border: rgba(255, 255, 255, 0.093);
+  --aw-border-hover: rgba(255, 255, 255, 0.13);
+  --aw-100: #1c1e25;
+  --aw-50: #0c0d10;
+  --aw-accent: #f00f22;
+  --aw-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  min-height: 100vh;
+  background: rgba(12, 14, 18, 0.6);
+  color: var(--aw-600);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+.aw {
+  overflow-x: clip;
+}
+
+.aw-container {
+  position: relative;
+  width: min(1160px, 100% - 48px);
+  margin: 0 auto;
+  padding: 48px 0 88px;
+}
+
+/* Slowly drifting colour wash behind the header */
+.aw-glow {
+  position: absolute;
+  top: -40px;
+  left: -120px;
+  z-index: 0;
+  width: 720px;
+  height: 360px;
+  background:
+    radial-gradient(closest-side, rgba(202, 12, 28, 0.14), transparent) 0 0 / 60% 100% no-repeat,
+    radial-gradient(closest-side, rgba(242, 147, 64, 0.12), transparent) 100% 30% / 50% 90% no-repeat;
+  filter: blur(30px);
+  pointer-events: none;
+  animation: aw-drift 18s ease-in-out infinite alternate;
+}
+
+.aw-header,
+.aw-toolbar,
+.aw-grid {
+  position: relative;
+  z-index: 1;
+}
+
+.aw svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Header ---------- */
+
+.aw-header {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  align-items: end;
+  gap: 40px;
+  margin-bottom: 40px;
+  animation: aw-rise 500ms var(--aw-ease) both;
+}
+
+.aw-eyebrow {
+  margin: 0 0 10px;
+  color: var(--aw-accent);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.aw-header h1 {
+  margin: 0;
+  color: var(--aw-900);
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.aw-lead {
+  max-width: 560px;
+  margin: 14px 0 0;
+  color: var(--aw-600);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+/* Progress card */
+
+.aw-progress-card {
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.093);
+  border-radius: 16px;
+  background: rgba(12, 14, 18, 0.85);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.125), 0 8px 24px -12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  transition: box-shadow 300ms ease, border-color 300ms ease;
+}
+
+.aw-progress-card:hover {
+  border-color: rgba(255, 255, 255, 0.13);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.125), 0 12px 32px -12px rgba(0, 0, 0, 0.45);
+}
+
+.aw-progress-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.aw-progress-top > span {
+  color: var(--aw-500);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.aw-progress-top strong {
+  color: var(--aw-900);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.aw-progress-top strong span {
+  margin-left: 2px;
+  color: var(--aw-400);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.aw-progress-bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--aw-100);
+}
+
+.aw-progress-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--aw-accent), #d83442);
+  transform-origin: left;
+  animation: aw-grow 900ms var(--aw-ease) 200ms both;
+}
+
+.aw-continue {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 14px 0 0;
+  color: var(--aw-600);
+  font-size: 13px;
+  text-decoration: none;
+  transition: color 200ms ease;
+}
+
+.aw-continue strong {
+  overflow: hidden;
+  color: var(--aw-900);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aw-continue:hover {
+  color: var(--aw-900);
+}
+
+.aw-continue.is-done {
+  color: #4df9c8;
+}
+
+/* ---------- Toolbar ---------- */
+
+.aw-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  animation: aw-rise 500ms var(--aw-ease) 60ms both;
+}
+
+.aw-filters {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.093);
+  border-radius: 10px;
+  background: #131419;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.aw-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--aw-500);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
+}
+
+.aw-filter:hover {
+  color: var(--aw-900);
+}
+
+.aw-filter:active {
+  transform: none;
+}
+
+.aw-filter.is-active {
+  background: var(--aw-900);
+  color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.aw-filter span {
+  color: var(--aw-400);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.aw-filter.is-active span {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.aw-count {
+  margin: 0;
+  color: var(--aw-500);
+  font-size: 13px;
+}
+
+/* ---------- Grid ---------- */
+
+.aw-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- Card ---------- */
+
+/* Animatable angle for the rotating hover border */
+@property --aw-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.aw-card {
+  --tone: #7e8391;
+  --tone-bright: #525660;
+  --tone-bg: #1c1e25;
+  --tone-ring: rgba(255, 255, 255, 0.1);
+  --tone-glow: rgba(70, 73, 83, 0.08);
+  --lift: 0px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 24px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.093);
+  border-radius: 16px;
+  /* Thin tone-coloured strip along the top edge */
+  background:
+    linear-gradient(90deg, var(--tone-bright), transparent 85%) top / 100% 3px no-repeat,
+    #131419;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.125), 0 4px 12px -6px rgba(0, 0, 0, 0.15);
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift));
+  transform-style: preserve-3d;
+  /* "backwards" (not "both") so the finished animation doesn't pin transform and block hover/tilt */
+  animation: aw-rise 600ms var(--aw-ease) backwards;
+  animation-delay: calc(120ms + var(--i, 0) * 70ms);
+  transition: transform 250ms var(--aw-ease), box-shadow 300ms ease, border-color 300ms ease;
+}
+
+.aw-card.tone-emerald { --tone: #08f7ad; --tone-bright: #34d399; --tone-bg: rgba(24, 231, 134, 0.12); --tone-ring: rgba(18, 211, 147, 0.22); --tone-glow: rgba(17, 197, 137, 0.1); }
+.aw-card.tone-amber { --tone: #f3780c; --tone-bright: #fb8824; --tone-bg: rgba(236, 120, 19, 0.12); --tone-ring: rgba(245, 120, 11, 0.24); --tone-glow: rgba(245, 120, 11, 0.11); }
+.aw-card.tone-rose { --tone: #e9164a; --tone-bright: #fb6077; --tone-bg: rgba(236, 19, 35, 0.12); --tone-ring: rgba(244, 63, 94, 0.2); --tone-glow: rgba(244, 62, 93, 0.09); }
+
+.aw-card:hover,
+.aw-card:focus-within {
+  --lift: -6px;
+
+  border-color: transparent;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.12),
+    0 18px 40px -14px rgba(0, 0, 0, 0.55),
+    0 0 0 4px var(--tone-glow);
+}
+
+/* Rotating gradient border, visible on hover */
+.aw-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--aw-angle),
+    #20222a 0%,
+    var(--tone-bright) 18%,
+    var(--tone) 30%,
+    #20222a 48%,
+    #20222a 60%,
+    var(--tone-bright) 78%,
+    #20222a 96%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  animation: aw-spin 3.5s linear infinite paused;
+  transition: opacity 300ms ease;
+}
+
+.aw-card:hover::before,
+.aw-card:focus-within::before {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+/* Soft spotlight that follows the cursor (position set from JS) */
+.aw-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(340px circle at var(--mx, 50%) var(--my, 0%), var(--tone-glow), transparent 65%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+.aw-card:hover::after {
+  opacity: 1;
+}
+
+.aw-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.aw-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--tone-ring);
+  border-radius: 11px;
+  background: var(--tone-bg);
+  color: var(--tone);
+  transition: transform 300ms var(--aw-ease), box-shadow 300ms ease;
+}
+
+.aw-icon svg {
+  width: 20px;
+  height: 20px;
+  /* Gentle idle float, offset per card so they don't bob in sync */
+  animation: aw-float 4s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.7s);
+}
+
+.aw-card:hover .aw-icon {
+  box-shadow: 0 0 0 4px var(--tone-ring), 0 8px 22px -4px var(--tone-ring);
+  transform: scale(1.1) rotate(-4deg) translateZ(20px);
+}
+
+.aw-number {
+  color: var(--aw-400);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.aw-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: rgba(24, 231, 134, 0.12);
+  color: #4df9c8;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.aw-done svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.5;
+}
+
+.aw-card h2 {
+  margin: 0;
+  color: var(--aw-900);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.aw-summary {
+  margin: 8px 0 0;
+  color: var(--aw-600);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.aw-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 20px;
+}
+
+.aw-level {
+  --tone: #7e8391;
+  --tone-bg: #1c1e25;
+
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--tone) 18%, transparent);
+  border-radius: 999px;
+  background: var(--tone-bg);
+  color: var(--tone);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.aw-level.tone-emerald { --tone: #08f7b3; --tone-bg: rgba(24, 231, 134, 0.12); }
+.aw-level.tone-amber { --tone: #f3780c; --tone-bg: rgba(236, 120, 19, 0.12); }
+.aw-level.tone-rose { --tone: #e9164a; --tone-bg: rgba(236, 19, 35, 0.12); }
+
+.aw-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--aw-500);
+  font-size: 13px;
+}
+
+.aw-meta-item svg {
+  width: 14px;
+  height: 14px;
+  color: var(--aw-400);
+}
+
+/* CTA */
+
+.aw-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 22px;
+  border-top: 1px solid transparent;
+  color: var(--aw-900);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* Stretch the link over the whole card */
+.aw-cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.aw-cta:focus-visible {
+  outline: none;
+}
+
+.aw-cta:focus-visible::after {
+  outline: 2px solid var(--aw-900);
+  outline-offset: 2px;
+}
+
+.aw-arrow {
+  width: 15px;
+  height: 15px;
+  transition: transform 300ms var(--aw-ease);
+}
+
+.aw-card:hover .aw-arrow,
+.aw-continue:hover .aw-arrow {
+  transform: translateX(4px);
+}
+
+.aw-card.is-completed .aw-cta {
+  color: var(--aw-600);
+}
+
+/* ---------- Motion ---------- */
+
+@keyframes aw-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes aw-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes aw-spin {
+  to { --aw-angle: 360deg; }
+}
+
+@keyframes aw-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes aw-drift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, 20px) scale(1.08); }
+  100% { transform: translate(-30px, 40px) scale(0.96); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aw *,
+  .aw *::before,
+  .aw *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+  .aw-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .aw-header {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .aw-container {
+    width: calc(100% - 32px);
+    padding-top: 32px;
+  }
+
+  .aw-header h1 {
+    font-size: 30px;
+  }
+
+  .aw-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .aw-card {
+    padding: 20px;
+  }
+}
+
+/* ---------- Dark theme overrides (see theme.css) ---------- */
+.aw {
+  background: var(--bg);
+}
+
+.aw-filter.is-active {
+  background: var(--accent-gradient);
+}

@@ -23,6 +23,10 @@ const toResponse = (assessment) => ({
   twoFactorAuth: assessment.twoFactorAuth,
   riskScore: assessment.riskScore,
   riskLevel: assessment.riskLevel,
+  // Per-category score (0-100) using the same weights as the overall score.
+  breakdown: Object.fromEntries(
+    Object.keys(ANSWER_SCORES).map((field) => [field, ANSWER_SCORES[field][assessment[field]]]),
+  ),
   createdAt: assessment.createdAt,
 });
 
@@ -40,6 +44,15 @@ router.post('/', async (req, res, next) => {
 
     const assessment = await Assessment.create({ ...answers, ...calculateRisk(answers), user: req.user._id });
     res.status(201).json({ success: true, assessment: toResponse(assessment) });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/', async (req, res, next) => {
+  try {
+    const assessments = await Assessment.find({ user: req.user._id }).sort({ createdAt: -1 }).limit(20);
+    res.json({ success: true, assessments: assessments.map(toResponse) });
   } catch (error) {
     next(error);
   }

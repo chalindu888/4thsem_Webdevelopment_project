@@ -1,0 +1,89 @@
+/* =====================================================
+   SECUREAI THEME — dark surfaces with a crimson → orange accent
+   Shared tokens; page stylesheets build on these.
+===================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces, darkest to lightest */
+  --bg: #07080b;
+  --bg-elevated: #0c0e12;
+  --surface: #121419;
+  --surface-2: #181b21;
+  --surface-3: #20242c;
+
+  /* Lines */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+
+  /* Text */
+  --text: #f4f5f7;
+  --text-muted: #a3a9b4;
+  --text-faint: #6c727d;
+
+  /* Brand accent */
+  --accent: #e5202f;
+  --accent-2: #ff6b1a;
+  --accent-soft: rgba(229, 32, 47, 0.12);
+  --accent-glow: rgba(229, 32, 47, 0.35);
+  --accent-gradient: linear-gradient(90deg, #e5202f 0%, #ff4d24 55%, #ff6b1a 100%);
+  --accent-gradient-diagonal: linear-gradient(135deg, #e5202f 0%, #ff6b1a 100%);
+}
+
+/* =====================================================
+   SITE-WIDE BACKGROUND IMAGE (public/site-bg.jpg)
+   A fixed, darkened layer behind every page. Page wrappers are made
+   transparent so it shows between cards; cards keep solid surfaces for legibility.
+===================================================== */
+
+html {
+  background: var(--bg);
+}
+
+/* "html body" outranks the plain `body` / page-wrapper rules in later stylesheets */
+html body {
+  background: transparent;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 70% at 75% 30%, rgba(229, 32, 47, 0.12), transparent 70%),
+    linear-gradient(180deg, rgba(7, 8, 11, 0.72) 0%, rgba(7, 8, 11, 0.86) 60%, rgba(7, 8, 11, 0.94) 100%),
+    url('/site-bg.jpg') 70% center / cover no-repeat;
+  pointer-events: none;
+}
+
+body .simple-page,
+body .auth-page,
+body .not-found,
+body .db,
+body .pf,
+body .aw,
+body .hm {
+  background: transparent;
+}
+
+/* Login/register side panel: let the artwork glow through */
+body .auth-left {
+  background:
+    radial-gradient(520px 420px at 100% 100%, rgba(255, 107, 26, 0.3), transparent 70%),
+    linear-gradient(150deg, rgba(7, 8, 11, 0.8) 35%, rgba(58, 9, 16, 0.75) 72%, rgba(179, 18, 30, 0.7) 100%);
+}
+
+/* Gradient text, e.g. the "Cyber Security" style highlight */
+.text-gradient {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+::selection {
+  background: rgba(229, 32, 47, 0.45);
+  color: white;
+}
