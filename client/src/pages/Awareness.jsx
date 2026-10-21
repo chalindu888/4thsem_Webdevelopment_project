@@ -1,39 +1,7 @@
 import { Link } from 'react-router-dom'
+import modules from '../data/modules'
 
 function Awareness() {
-  const modules = [
-    {
-      icon: '',
-      title: 'Phishing Awareness',
-      level: 'Beginner',
-    },
-    {
-      icon: '',
-      title: 'Password Security',
-      level: 'Beginner',
-    },
-    {
-      icon: '',
-      title: 'Device Security',
-      level: 'Intermediate',
-    },
-    {
-      icon: '',
-      title: 'Social Engineering',
-      level: 'Intermediate',
-    },
-    {
-      icon: '',
-      title: 'Network Security',
-      level: 'Intermediate',
-    },
-    {
-      icon: '',
-      title: 'AI & Deepfake Threats',
-      level: 'Advanced',
-    },
-  ]
-
   return (
     <div className="simple-page">
       <div className="simple-navbar">
@@ -60,7 +28,7 @@ function Awareness() {
 
         <div className="module-grid">
           {modules.map((module) => (
-            <div className="module-card" key={module.title}>
+            <div className="module-card" key={module.id}>
               <div className="module-icon">
                 {module.icon}
               </div>
@@ -71,14 +39,11 @@ function Awareness() {
 
               <h3>{module.title}</h3>
 
-              <p>
-                Learn important security concepts, practical safety techniques
-                and common cyber threats.
-              </p>
+              <p>{module.summary}</p>
 
-              <button>
+              <Link to={`/awareness/${module.id}`} className="module-start-link">
                 Start Module →
-              </button>
+              </Link>
             </div>
           ))}
         </div>
