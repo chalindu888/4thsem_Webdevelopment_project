@@ -45,6 +45,15 @@ router.post('/', async (req, res, next) => {
   }
 });
 
+router.get('/', async (req, res, next) => {
+  try {
+    const assessments = await Assessment.find({ user: req.user._id }).sort({ createdAt: -1 }).limit(20);
+    res.json({ success: true, assessments: assessments.map(toResponse) });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get('/latest', async (req, res, next) => {
   try {
     const assessment = await Assessment.findOne({ user: req.user._id }).sort({ createdAt: -1 });
