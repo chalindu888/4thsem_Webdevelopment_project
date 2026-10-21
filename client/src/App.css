@@ -851,6 +851,33 @@
   border-color: rgba(255,255,255,0.4);
 }
 
+/* Sign Out Button & Nav Greeting */
+.nav-greeting {
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.signout-btn {
+  border-radius: 9px;
+  padding: 10px 18px;
+  font-size: 12px;
+  font-weight: 800;
+  border: 1px solid #e8433e;
+  background: rgba(232, 67, 62, 0.08);
+  color: #e8433e;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.signout-btn:hover {
+  background: #e8433e;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(232, 67, 62, 0.25);
+}
+
 .hero-section {
   position: relative;
   overflow: hidden;

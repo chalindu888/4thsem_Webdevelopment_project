@@ -1,8 +1,37 @@
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import heroImage from '../assets/hero.png'
 import '../App.css'
 
 function Home() {
+  const navigate = useNavigate()
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userName, setUserName] = useState('')
+
+  // Check auth state on mount
+  useEffect(() => {
+    const token = localStorage.getItem('secureai_token')
+    const user = localStorage.getItem('user')
+    if (token) {
+      setIsLoggedIn(true)
+      try {
+        const userData = JSON.parse(user)
+        setUserName(userData?.name || 'User')
+      } catch {
+        setUserName('User')
+      }
+    }
+  }, [])
+
+  // Sign Out handler
+  const handleSignOut = () => {
+    localStorage.removeItem('secureai_token')
+    localStorage.removeItem('user')
+    setIsLoggedIn(false)
+    setUserName('')
+    navigate('/login')
+  }
+
   return (
     <div className="app">
       {/* ================= NAVBAR ================= */}
@@ -26,13 +55,29 @@ function Home() {
           </nav>
 
           <div className="nav-actions">
-            <Link to="/login" className="button-link">
-              <button className="login-btn">Login</button>
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <span className="nav-greeting">Hello, {userName}</span>
 
-            <Link to="/register" className="button-link">
-              <button className="primary-btn">Get Started</button>
-            </Link>
+                <Link to="/dashboard" className="button-link">
+                  <button className="login-btn">Dashboard</button>
+                </Link>
+
+                <button className="signout-btn" onClick={handleSignOut}>
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="button-link">
+                  <button className="login-btn">Login</button>
+                </Link>
+
+                <Link to="/register" className="button-link">
+                  <button className="primary-btn">Get Started</button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
