@@ -1,0 +1,941 @@
+/* =====================================================
+   PROFILE PAGE (pages/profile.jsx)
+===================================================== */
+
+.pf {
+  --pf-ink: #e0e1e4;
+  --pf-text: #c0c2c9;
+  --pf-muted: #969aa6;
+  --pf-faint: #757a8a;
+  --pf-border: rgba(255, 255, 255, 0.126);
+  --pf-border-strong: rgba(255, 255, 255, 0.2);
+  --pf-surface: #131419;
+  --pf-subtle: #0c0d10;
+  --pf-hover: rgba(255, 255, 255, 0.056);
+  --pf-accent: #f00f22;
+  --pf-success: #1ee166;
+  --pf-warning: #f87707;
+  --pf-danger: #dc2626;
+  --pf-radius: 12px;
+
+  min-height: 100vh;
+  background: #090a0c;
+  color: var(--pf-text);
+}
+
+.pf-container {
+  width: min(1080px, 100% - 48px);
+  margin: 0 auto;
+  padding: 32px 0 72px;
+}
+
+.pf-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* ---------- Hero ---------- */
+
+.pf-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 28px;
+  overflow: hidden;
+  padding: 28px 28px 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background:
+    radial-gradient(600px 220px at 15% -20%, rgba(202, 12, 28, 0.35), transparent 70%),
+    radial-gradient(500px 200px at 100% 0%, rgba(216, 52, 66, 0.12), transparent 70%),
+    #08090b;
+  color: #e2e8f0;
+  animation: pf-rise 400ms ease both;
+}
+
+/* Faint grid texture */
+.pf-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(70, 73, 83, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(70, 73, 83, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(to bottom, black, transparent 80%);
+  pointer-events: none;
+}
+
+.pf-hero > * {
+  position: relative;
+}
+
+.pf-hero-main {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+}
+
+.pf-avatar-ring {
+  flex-shrink: 0;
+  padding: 3px;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, #d83442, #ca0c1c, #f29340, #d83442);
+  box-shadow: 0 0 0 4px rgba(216, 52, 66, 0.08), 0 8px 24px rgba(216, 13, 30, 0.35);
+}
+
+.pf-avatar {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #111317, #ca0c1c);
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.pf-identity {
+  min-width: 0;
+}
+
+.pf-name-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.pf-name-row h1 {
+  margin: 0;
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.pf-tier {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border: 1px solid rgba(242, 147, 64, 0.35);
+  border-radius: 999px;
+  background: rgba(242, 147, 64, 0.08);
+  color: #f6b47b;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pf-tier-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f29340;
+  box-shadow: 0 0 8px #f29340;
+}
+
+.pf-email {
+  margin: 4px 0 0;
+  overflow: hidden;
+  color: #757a8a;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pf-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.pf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(70, 73, 83, 0.06);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pf-badge-success {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.08);
+  color: #86efac;
+}
+
+.pf-badge-warning {
+  border-color: rgba(245, 120, 11, 0.3);
+  background: rgba(245, 120, 11, 0.08);
+  color: #fc9f4d;
+}
+
+.pf-hero-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.pf-hero-stats {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0 -28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pf-hero-stat {
+  padding: 16px 28px;
+}
+
+.pf-hero-stat + .pf-hero-stat {
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pf-hero-stat dt {
+  color: #757a8a;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pf-hero-stat dd {
+  margin: 6px 0 0;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Buttons ---------- */
+
+.pf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease, opacity 200ms ease;
+}
+
+.pf-btn:active {
+  transform: none;
+}
+
+.pf-btn-light {
+  background: #131419;
+  color: var(--pf-ink);
+}
+
+.pf-btn-light:hover {
+  background: #20222a;
+}
+
+.pf-btn-primary {
+  background: var(--pf-ink);
+  color: white;
+}
+
+.pf-btn-primary:hover:not(:disabled) {
+  background: #111317;
+}
+
+.pf-btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pf-btn-secondary {
+  border-color: var(--pf-border-strong);
+  background: var(--pf-surface);
+  color: var(--pf-ink);
+}
+
+.pf-btn-secondary:hover {
+  background: var(--pf-subtle);
+}
+
+.pf-btn-danger {
+  border-color: rgba(220, 38, 38, 0.25);
+  background: var(--pf-surface);
+  color: var(--pf-danger);
+}
+
+.pf-btn-danger:hover {
+  border-color: rgba(220, 38, 38, 0.45);
+  background: rgba(220, 38, 38, 0.05);
+}
+
+/* ---------- Tabs ---------- */
+
+.pf-tabs {
+  display: flex;
+  gap: 4px;
+  margin: 28px 0 20px;
+  border-bottom: 1px solid var(--pf-border);
+}
+
+.pf-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: -1px;
+  padding: 10px 12px;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--pf-muted);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 200ms ease, border-color 200ms ease;
+}
+
+.pf-tab:hover {
+  color: var(--pf-ink);
+}
+
+.pf-tab:active {
+  transform: none;
+}
+
+.pf-tab.is-active {
+  border-bottom-color: var(--pf-ink);
+  color: var(--pf-ink);
+}
+
+.pf-tab-count {
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.096);
+  color: var(--pf-muted);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.pf-panel {
+  animation: pf-fade 220ms ease both;
+}
+
+/* ---------- Cards ---------- */
+
+.pf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.pf-card {
+  padding: 24px;
+  border: 1px solid var(--pf-border);
+  border-radius: var(--pf-radius);
+  background: var(--pf-surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.pf-card-flush {
+  padding: 0;
+}
+
+.pf-card-flush .pf-card-header {
+  padding: 24px 24px 18px;
+  margin: 0;
+  border-bottom: 1px solid var(--pf-border);
+}
+
+.pf-card-body {
+  padding: 24px;
+}
+
+.pf-card-header {
+  margin-bottom: 20px;
+}
+
+.pf-card-header h2 {
+  margin: 0;
+  color: var(--pf-ink);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.pf-card-header p {
+  margin: 4px 0 0;
+  color: var(--pf-muted);
+  font-size: 13px;
+}
+
+/* ---------- Form ---------- */
+
+.pf-form {
+  display: grid;
+  gap: 18px;
+}
+
+.pf-field {
+  display: grid;
+  gap: 6px;
+}
+
+.pf-field > span {
+  color: var(--pf-ink);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.pf-field input {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--pf-border-strong);
+  border-radius: 8px;
+  background: var(--pf-surface);
+  color: var(--pf-ink);
+  font-size: 14px;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.pf-field input:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.pf-field input:focus {
+  border-color: var(--pf-accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(216, 13, 30, 0.15);
+}
+
+.pf-field input:disabled {
+  background: var(--pf-subtle);
+  color: var(--pf-muted);
+  cursor: not-allowed;
+}
+
+.pf-field small {
+  color: var(--pf-muted);
+  font-size: 12px;
+}
+
+.pf-input-locked {
+  position: relative;
+}
+
+.pf-input-locked input {
+  padding-right: 36px;
+}
+
+.pf-input-locked .pf-icon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  color: var(--pf-faint);
+  transform: translateY(-50%);
+}
+
+.pf-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: 6px -24px -24px;
+  padding: 14px 24px;
+  border-top: 1px solid var(--pf-border);
+  border-radius: 0 0 var(--pf-radius) var(--pf-radius);
+  background: var(--pf-subtle);
+}
+
+.pf-saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--pf-success);
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.pf-saved.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Status pills ---------- */
+
+.pf-pill {
+  --tone: var(--pf-muted);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border: 1px solid color-mix(in srgb, var(--tone) 28%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tone) 8%, transparent);
+  color: color-mix(in srgb, var(--tone) 85%, #f7f7f8);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pf-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tone);
+}
+
+.tone-success { --tone: var(--pf-success); }
+.tone-warning { --tone: var(--pf-warning); }
+.tone-danger { --tone: var(--pf-danger); }
+.tone-neutral { --tone: var(--pf-faint); }
+
+.pf-pill.tone-success .pf-pill-dot {
+  box-shadow: 0 0 0 3px rgba(27, 202, 92, 0.15), 0 0 8px rgba(27, 202, 92, 0.6);
+}
+
+.pf-pill.tone-danger .pf-pill-dot {
+  animation: pf-pulse 2s ease-in-out infinite;
+}
+
+/* Pills sitting on the dark hero */
+.pf-hero .pf-pill {
+  color: color-mix(in srgb, var(--tone) 55%, white);
+  font-size: 13px;
+}
+
+/* ---------- Posture (overview) ---------- */
+
+.pf-posture {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Tone comes from .tone-* classes; var() fallbacks supply the default */
+.pf-ring {
+  position: relative;
+  width: 116px;
+  height: 116px;
+  flex-shrink: 0;
+}
+
+.pf-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.pf-ring circle {
+  fill: none;
+  stroke-width: 8;
+}
+
+.pf-ring-track {
+  stroke: rgba(255, 255, 255, 0.084);
+}
+
+.pf-ring-value {
+  stroke: var(--tone, var(--pf-muted));
+  stroke-linecap: round;
+  animation: pf-ring-draw 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.pf-ring-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+
+.pf-ring-label strong {
+  color: var(--pf-ink);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.pf-ring-label span {
+  margin-top: 4px;
+  color: var(--pf-muted);
+  font-size: 11px;
+}
+
+.pf-posture-list {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pf-posture-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--pf-border);
+  font-size: 13px;
+}
+
+.pf-posture-item:last-child {
+  border-bottom: none;
+}
+
+/* ---------- Security rows ---------- */
+
+.pf-rows {
+  padding: 6px;
+}
+
+.pf-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 18px;
+  border-radius: 8px;
+  transition: background-color 200ms ease;
+}
+
+.pf-row + .pf-row {
+  box-shadow: 0 -1px 0 var(--pf-border);
+}
+
+.pf-row:hover {
+  background: var(--pf-hover);
+}
+
+.pf-row-text strong {
+  color: var(--pf-ink);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pf-row-text p {
+  margin: 3px 0 0;
+  color: var(--pf-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.pf-row-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.pf-row-metric {
+  color: var(--pf-ink);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Toggle switch ---------- */
+
+.pf-switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: 999px;
+  background: #23262f;
+  transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+
+.pf-switch:active {
+  transform: none;
+}
+
+.pf-switch:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(216, 13, 30, 0.25);
+}
+
+.pf-switch[aria-checked="true"] {
+  background: var(--pf-accent);
+}
+
+.pf-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #131419;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pf-switch[aria-checked="true"] .pf-switch-thumb {
+  transform: translateX(18px);
+}
+
+/* ---------- Activity timeline ---------- */
+
+.pf-timeline {
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+}
+
+.pf-event {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  transition: background-color 200ms ease;
+}
+
+.pf-event:hover {
+  background: var(--pf-hover);
+}
+
+/* Vertical connector between events */
+.pf-event:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 34px;
+  bottom: -14px;
+  left: 22px;
+  width: 1px;
+  background: var(--pf-border);
+}
+
+.pf-event-dot {
+  position: relative;
+  z-index: 1;
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--tone, var(--pf-faint));
+  box-shadow: 0 0 0 4px var(--pf-surface), 0 0 0 5px var(--pf-border);
+}
+
+.pf-event-text {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.pf-event-text strong {
+  color: var(--pf-ink);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pf-event-text time {
+  color: var(--pf-muted);
+  font-size: 12px;
+}
+
+.pf-delta {
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.pf-delta.is-up { color: var(--pf-success); }
+.pf-delta.is-down { color: var(--pf-danger); }
+
+/* ---------- States ---------- */
+
+.pf-empty {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 28px 16px;
+  border: 1px dashed var(--pf-border-strong);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.pf-empty strong {
+  color: var(--pf-ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pf-empty p {
+  margin: 0 0 8px;
+  color: var(--pf-muted);
+  font-size: 13px;
+}
+
+.pf-error {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: 8px;
+  background: rgba(220, 38, 38, 0.05);
+  color: #e76060;
+  font-size: 13px;
+}
+
+.pf-skeleton {
+  display: grid;
+  gap: 12px;
+}
+
+.pf-skeleton span {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #1d1f26 25%, #0c0d10 50%, #1d1f26 75%);
+  background-size: 200% 100%;
+  animation: pf-shimmer 1.4s linear infinite;
+}
+
+.pf-skeleton span:nth-child(odd) {
+  width: 70%;
+}
+
+/* ---------- Animations ---------- */
+
+@keyframes pf-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes pf-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes pf-ring-draw {
+  from { stroke-dashoffset: 264; }
+}
+
+@keyframes pf-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.45); }
+  50% { box-shadow: 0 0 0 4px rgba(220, 38, 38, 0); }
+}
+
+@keyframes pf-shimmer {
+  to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf *,
+  .pf *::before,
+  .pf *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 860px) {
+  .pf-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pf-hero-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pf-hero-stat:nth-child(3) {
+    border-left: none;
+  }
+
+  .pf-hero-stat:nth-child(n + 3) {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+@media (max-width: 600px) {
+  .pf-container {
+    width: calc(100% - 32px);
+    padding-top: 20px;
+  }
+
+  .pf-hero {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 22px 20px 0;
+  }
+
+  .pf-hero-stats {
+    margin: 0 -20px;
+  }
+
+  .pf-hero-stat {
+    padding: 14px 20px;
+  }
+
+  .pf-hero-main {
+    align-items: flex-start;
+  }
+
+  .pf-avatar {
+    width: 56px;
+    height: 56px;
+    font-size: 19px;
+  }
+
+  .pf-posture {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pf-ring {
+    align-self: center;
+  }
+
+  .pf-row,
+  .pf-event {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .pf-event .pf-row-value {
+    width: 100%;
+    padding-left: 25px;
+  }
+}
+
+/* ---------- Dark theme overrides (see theme.css) ---------- */
+.pf {
+  background: var(--bg);
+}
+
+.pf-btn-primary,
+.pf-btn-primary:hover:not(:disabled) {
+  background: var(--accent-gradient);
+  box-shadow: 0 8px 22px -10px var(--accent-glow);
+}
+
+.pf-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}

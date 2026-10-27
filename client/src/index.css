@@ -9,8 +9,8 @@ html {
 :root {
   font-family: "Inter", "Segoe UI", sans-serif;
 
-  color: #14263d;
-  background: #f5f8f7;
+  color: #d6d7dc;
+  background: #1b1d24;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -28,7 +28,7 @@ body,
 
 body {
   min-width: 320px;
-  background: #f5f8f7;
+  background: #1b1d24;
 }
 
 button,
@@ -56,11 +56,22 @@ a {
 }
 
 :focus-visible {
-  outline: 3px solid rgba(242, 166, 64, 0.75);
+  outline: 3px solid rgba(242, 147, 64, 0.75);
   outline-offset: 3px;
 }
 
 ::selection {
-  background: #2563eb;
+  background: #eb3f25;
+  color: white;
+}
+/* ---------- Dark theme base (see theme.css) ---------- */
+:root,
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+::selection {
+  background: rgba(229, 32, 47, 0.45);
   color: white;
 }

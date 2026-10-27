@@ -1,15 +1,9 @@
-import { Link } from 'react-router-dom'
+import Navbar from '../components/Navbar'
 
 function Admin() {
   return (
     <div className="simple-page">
-      <div className="simple-navbar">
-        <Link to="/" className="simple-brand">
-           SecureAI Admin
-        </Link>
-
-        <Link to="/">Logout</Link>
-      </div>
+      <Navbar />
 
       <main className="placeholder-page">
         <div className="placeholder-icon">

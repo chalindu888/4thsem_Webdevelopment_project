@@ -1,10 +1,11 @@
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import api from '../api/client'
+import api, { clearSession, getErrorMessage } from '../api/client'
+import Navbar from '../components/Navbar'
 
 function Assessment() {
+  const navigate = useNavigate()
   const [form, setForm] = useState({ passwordHabits: '', phishingAwareness: '', twoFactorAuth: '' })
-  const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -21,23 +22,21 @@ function Assessment() {
 
     try {
       const { data } = await api.post('/assessment', form)
-      setResult(data)
+      navigate('/results', { state: { assessment: data.assessment } })
     } catch (requestError) {
-      setError(requestError.response?.data?.message || 'Unable to submit assessment. Please try again.')
-    } finally {
+      if (requestError.response?.status === 401) {
+        clearSession()
+        navigate('/login', { replace: true, state: { message: getErrorMessage(requestError) } })
+        return
+      }
+      setError(getErrorMessage(requestError))
       setLoading(false)
     }
   }
 
   return (
     <div className="simple-page">
-      <div className="simple-navbar">
-        <Link to="/" className="simple-brand">
-           SecureAI
-        </Link>
-
-        <Link to="/dashboard">Dashboard</Link>
-      </div>
+      <Navbar />
 
       <main className="placeholder-page">
         <div className="placeholder-icon">📋</div>
@@ -88,18 +87,11 @@ function Assessment() {
             </select>
           </label>
           <button className="primary-btn large-btn" type="submit" disabled={loading}>
-            {loading ? 'Calculating...' : 'Begin Assessment →'}
+            {loading ? 'Submitting...' : 'Submit Assessment →'}
           </button>
         </form>
 
-        {error && <p className="form-message error-message">{error}</p>}
-        {result && (
-          <div className="result-preview">
-            <span>Security Score</span>
-            <strong>{result.riskScore} / 100</strong>
-            <div className="result-risk">{result.riskLevel}</div>
-          </div>
-        )}
+        {error && <p className="form-message error-message" role="alert">{error}</p>}
       </main>
     </div>
   )
