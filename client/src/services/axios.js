@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api', // අපේ Backend එක ක්‍රියාත්මක වන Port එක
+  baseURL: '/api', // Forwarded to the backend by the Vite proxy (vite.config.js)
   headers: {
     'Content-Type': 'application/json',
   },
