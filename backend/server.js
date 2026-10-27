@@ -12,9 +12,18 @@ const app = express();
 // Database Connection Call
 connectDB();
 
+// CORS Middleware (Preflight සහ සියලුම Origins සඳහා ඉඩ ලබා දීම)
+app.use(cors({
+  origin: '*', // ඕනෑම ඩොමේන් එකකින් එන ඉල්ලීම් බාර ගැනීමට
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Preflight requests සඳහා OPTIONS හැසිරවීම
+app.options('*', cors());
+
 // Middleware
 app.use(express.json());
-app.use(cors());
 
 // Root & Health Check Routes
 app.get('/', (req, res) => {
@@ -28,7 +37,17 @@ app.get('/api', (req, res) => {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/assessments', assessmentRoutes);
+app.use('/api/assessment', assessmentRoutes);
 app.use('/api/items', itemRoutes);
+app.use('/api/item', itemRoutes);
+
+// Catch-all 404 for undefined API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ 
+    success: false, 
+    message: `API endpoint ${req.originalUrl} not found on server.` 
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 
