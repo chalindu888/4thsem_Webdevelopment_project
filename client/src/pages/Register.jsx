@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import api from '../api/client'
+import api, { getErrorMessage } from '../api/client'
 
 function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
@@ -31,7 +31,7 @@ function Register() {
       localStorage.setItem('user', JSON.stringify(data.user))
       navigate('/dashboard')
     } catch (requestError) {
-      setError(requestError.response?.data?.message || 'Unable to create your account. Please try again.')
+      setError(getErrorMessage(requestError))
     } finally {
       setLoading(false)
     }

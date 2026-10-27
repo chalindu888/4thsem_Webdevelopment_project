@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import api from '../api/client'
+import api, { getErrorMessage } from '../api/client'
 
 function Login() {
   const [form, setForm] = useState({ email: '', password: '' })
@@ -27,13 +27,8 @@ function Login() {
       localStorage.setItem('user', JSON.stringify(data.user))
       navigate('/dashboard')
     } catch (requestError) {
-      const responseData = requestError.response?.data
-      setError(
-        responseData?.message ||
-        responseData?.error ||
-        requestError.message ||
-        'Unable to sign in. Please try again.',
-      )
+      // Readable messages: "Invalid email or password." (401), "Server unreachable..." (no response), etc.
+      setError(requestError.response?.status === 401 ? 'Invalid email or password.' : getErrorMessage(requestError))
     } finally {
       setLoading(false)
     }

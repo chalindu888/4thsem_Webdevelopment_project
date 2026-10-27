@@ -1,7 +1,9 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  // '/api' goes through the Vite dev proxy (vite.config.js) to Express on port 5000.
+  // Set VITE_API_URL to a full URL only when the API is hosted elsewhere.
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
@@ -31,7 +33,7 @@ export function getErrorMessage(error) {
   }
 
   if (error.code === 'ECONNABORTED') return 'The server took too long to respond. Please try again.'
-  if (error.request) return `Cannot reach the server at ${api.defaults.baseURL}. Make sure the backend is running (npm run server).`
+  if (error.request) return 'Server unreachable. Start the app with "npm run dev" in the project folder.'
 
   return error.message || 'Something went wrong. Please try again.'
 }
