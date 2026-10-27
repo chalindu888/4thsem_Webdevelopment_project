@@ -7,7 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
-// Database Connection Call කිරීම
+// Database Connection Call
 connectDB();
 
 // Middleware
@@ -18,4 +18,11 @@ app.use(cors());
 app.use('/api/auth', authRoutes);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server එක Port ${PORT} හි වැඩ කරයි...`));
+
+// ලෝකල් පරිසරයේදී (Local) පමණක් app.listen ධාවනය වේ
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => console.log(`Server එක Port ${PORT} හි වැඩ කරයි...`));
+}
+
+// Vercel Serverless Function සඳහා app එක අනිවාර්යයෙන්ම export කළ යුතුය
+module.exports = app;
