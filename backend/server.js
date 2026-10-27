@@ -4,6 +4,8 @@ require('dotenv').config();
 
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const assessmentRoutes = require('./routes/assessmentRoutes');
+const itemRoutes = require('./routes/itemRoutes');
 
 const app = express();
 
@@ -14,7 +16,7 @@ connectDB();
 app.use(express.json());
 app.use(cors());
 
-// Root & Health Check Routes (ෆ්‍රන්ට්එන්ඩ් එකෙන් සර්වර් එක පරීක්ෂා කරන විට 404 ඒම වැළැක්වීමට)
+// Root & Health Check Routes
 app.get('/', (req, res) => {
   res.json({ status: 'success', message: 'SecureAI Backend is running successfully!' });
 });
@@ -23,8 +25,10 @@ app.get('/api', (req, res) => {
   res.json({ status: 'success', message: 'SecureAI API is running successfully!' });
 });
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/assessments', assessmentRoutes);
+app.use('/api/items', itemRoutes);
 
 const PORT = process.env.PORT || 5000;
 
