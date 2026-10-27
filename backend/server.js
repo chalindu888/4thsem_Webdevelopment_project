@@ -14,6 +14,15 @@ connectDB();
 app.use(express.json());
 app.use(cors());
 
+// Root & Health Check Routes (ෆ්‍රන්ට්එන්ඩ් එකෙන් සර්වර් එක පරීක්ෂා කරන විට 404 ඒම වැළැක්වීමට)
+app.get('/', (req, res) => {
+  res.json({ status: 'success', message: 'SecureAI Backend is running successfully!' });
+});
+
+app.get('/api', (req, res) => {
+  res.json({ status: 'success', message: 'SecureAI API is running successfully!' });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 
