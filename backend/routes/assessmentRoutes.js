@@ -1,38 +1,68 @@
 const express = require('express');
 const router = express.Router();
-const Assessment = require('../models/Assessment');
+const Assessment = require('../models/Assessment'); // ඔබ සතුව ඇති Assessment Model එක මෙහි සම්බන්ධ වේ
 
-// Assessment Submit කරන Endpoint එක
-router.post('/', async (req, res) => {
+// @route   GET /api/assessment (හෝ /api/assessments)
+// @desc    සියලුම assessments ලබා ගැනීම
+router.get('/', async (req, res) => {
   try {
-    const { passwordHabits, phishingAwareness, use2FA } = req.body;
-
-    // 1. Simple Risk Calculation Logic එකක් (Logic එක ඔයාට අවශ්‍ය විදියට වෙනස් කළ හැක)
-    let score = 100;
-    if (passwordHabits === 'weak') score -= 30;
-    if (phishingAwareness === 'low') score -= 40;
-    if (!use2FA) score -= 30;
-
-    let level = 'Low';
-    if (score < 50) level = 'High Risk';
-    else if (score < 80) level = 'Medium Risk';
-
-    // 2. MongoDB එකේ Save කිරීම
-    const newAssessment = await Assessment.create({
-      passwordHabits,
-      phishingAwareness,
-      use2FA,
-      riskScore: score,
-      riskLevel: level
-    });
-
-    // 3. Result එක Frontend එකට ආපසු යැවීම
-    res.status(201).json({
+    const assessments = await Assessment.find().sort({ createdAt: -1 });
+    
+    // ඩෑෂ්බෝඩ් එකට අවශ්‍ය format එකට ප්‍රතිචාර යැවීම
+    res.status(200).json({
       success: true,
-      data: newAssessment
+      count: assessments.length,
+      data: assessments
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error('Error fetching assessments:', error.message);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server Error while fetching assessments',
+      error: error.message 
+    });
+  }
+});
+
+// @route   POST /api/assessment (හෝ /api/assessments)
+// @desc    අලුත් assessment එකක් සේව් කිරීම
+router.post('/', async (req, res) => {
+  try {
+    const newAssessment = new Assessment(req.body);
+    const savedAssessment = await newAssessment.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Assessment created successfully',
+      data: savedAssessment
+    });
+  } catch (error) {
+    console.error('Error creating assessment:', error.message);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server Error while creating assessment',
+      error: error.message 
+    });
+  }
+});
+
+// @route   GET /api/assessment/:id
+// @desc    නිශ්චිත ID එකක් ඇති assessment එකක් ලබා ගැනීම
+router.get('/:id', async (req, res) => {
+  try {
+    const assessment = await Assessment.findById(req.params.id);
+    
+    if (!assessment) {
+      return res.status(404).json({ success: false, message: 'Assessment not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: assessment
+    });
+  } catch (error) {
+    console.error('Error fetching assessment by ID:', error.message);
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 });
 
