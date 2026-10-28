@@ -14,7 +14,7 @@ connectDB();
 
 // CORS Middleware (Preflight සහ සියලුම Origins සඳහා ඉඩ ලබා දීම)
 app.use(cors({
-  origin: '*', // ඕනෑම ඩොමේන් එකකින් එන ඉල්ලීම් බාර ගැනීමට
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -34,7 +34,7 @@ app.get('/api', (req, res) => {
   res.json({ status: 'success', message: 'SecureAI API is running successfully!' });
 });
 
-// API Routes
+// API Routes (Singular සහ Plural රූට්ස් දෙකම සඳහා සහය දැක්වීම)
 app.use('/api/auth', authRoutes);
 app.use('/api/assessments', assessmentRoutes);
 app.use('/api/assessment', assessmentRoutes);
