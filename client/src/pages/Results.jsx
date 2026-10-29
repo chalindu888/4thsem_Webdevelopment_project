@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import api, { clearSession, getErrorMessage } from '../api/client'
 import Navbar from '../components/Navbar'
 import { statusOf } from '../services/assessmentStatus'
+import { buildRecommendations, PRIORITY_TONE } from '../services/recommendations'
 import './results.css'
 
 const CATEGORIES = [
@@ -86,6 +87,7 @@ function Results() {
   }
 
   const risk = assessment ? statusOf('riskLevel', assessment.riskLevel) : null
+  const advice = assessment ? buildRecommendations(assessment) : []
 
   return (
     <div className="simple-page">
@@ -147,6 +149,27 @@ function Results() {
                   </article>
                 )
               })}
+            </section>
+
+            <section className="rs-advice" aria-labelledby="rs-advice-title">
+              <h2 id="rs-advice-title">Recommendations</h2>
+              {advice.length ? (
+                <ul>
+                  {advice.map((item) => (
+                    <li key={item.title}>
+                      <Link to={item.to} className={`rs-advice-item tone-${PRIORITY_TONE[item.priority]}`}>
+                        <span className="rs-advice-text">
+                          <strong>{item.title}</strong>
+                          <span>{item.description}</span>
+                        </span>
+                        <span className="rs-advice-priority">{item.priority === 'high' ? 'High priority' : 'Medium priority'}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="rs-advice-clear">No weak areas found. Keep up the good habits.</p>
+              )}
             </section>
 
             {error && <p className="rs-error" role="alert">{error}</p>}

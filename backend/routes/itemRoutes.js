@@ -1,53 +1,42 @@
 const express = require('express');
-const router = express.Router();
+const mongoose = require('mongoose');
 const Item = require('../models/Item');
+const { protect } = require('../middleware/auth');
 
-// @route   GET /api/items
-// @desc    Get all items (සියලුම දත්ත ලබා ගැනීම)
-router.get('/', async (req, res) => {
+const router = express.Router();
+
+// 1. Get all items
+router.get('/', async (req, res, next) => {
   try {
-    const items = await Item.find().sort({ createdAt: -1 });
-    res.status(200).json(items);
+    const items = await Item.find();
+    res.json(items);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 });
 
-// @route   POST /api/items
-// @desc    Create a new item (අලුත් දත්තයක් එකතු කිරීම)
-router.post('/', async (req, res) => {
-  const { title, description, price } = req.body;
-
-  if (!title || !description || !price) {
-    return res.status(400).json({ message: 'Please fill all fields' });
-  }
-
+// 2. Create a new item (requires login so anonymous visitors can't write data)
+router.post('/', protect, async (req, res, next) => {
+  const { title, description, price } = req.body || {};
   try {
-    const newItem = await Item.create({
-      title,
-      description,
-      price,
-    });
-    res.status(201).json(newItem);
+    const savedItem = await Item.create({ title, description, price });
+    res.status(201).json(savedItem);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    next(error);
   }
 });
 
-// @route   DELETE /api/items/:id
-// @desc    Delete an item (දත්තයක් ඉවත් කිරීම)
-router.delete('/:id', async (req, res) => {
+// 3. Delete an item (requires login)
+router.delete('/:id', protect, async (req, res, next) => {
   try {
-    const item = await Item.findById(req.params.id);
-
-    if (!item) {
-      return res.status(404).json({ message: 'Item not found' });
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ success: false, message: 'Item not found.' });
     }
-
-    await item.deleteOne();
-    res.status(200).json({ id: req.params.id, message: 'Item deleted successfully' });
+    const deleted = await Item.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ success: false, message: 'Item not found.' });
+    res.json({ message: 'Item deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 });
 

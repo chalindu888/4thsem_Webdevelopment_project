@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import api from '../api/client' // Register එකේ පාවිච්චි කළ api client එකම මෙහිදීත් පාවිච්චි කරන්න
 

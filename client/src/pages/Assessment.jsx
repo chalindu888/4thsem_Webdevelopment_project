@@ -78,6 +78,8 @@ function Assessment() {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    // Ignore repeat submits (double-click, Enter) while a request is in flight.
+    if (loading) return
     setError('')
 
     const errors = validate()
@@ -106,8 +108,8 @@ function Assessment() {
       }
 
       const { data } = await api.post('/assessment', payload)
-      // The dashboard shows a success message and reloads, so the new score appears straight away.
-      navigate('/dashboard', { state: { savedAssessment: data.assessment } })
+      // Show the new report; ?id= keeps it on refresh. The dashboard picks it up on its next load.
+      navigate(`/results?id=${data.assessment.id}`, { state: { assessment: data.assessment, justSaved: true } })
     } catch (requestError) {
       if (requestError.response?.status === 401) {
         clearSession()
