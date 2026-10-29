@@ -10,6 +10,8 @@ const ANSWER_SCORES = {
   twoFactorAuth: { enabled: 95, some: 60, none: 20 },
 };
 
+const NOTES_MAX = 300;
+
 const calculateRisk = (answers) => {
   const scores = Object.keys(ANSWER_SCORES).map((field) => ANSWER_SCORES[field][answers[field]]);
   const score = Math.round(scores.reduce((total, value) => total + value, 0) / scores.length);
@@ -21,6 +23,7 @@ const toResponse = (assessment) => ({
   passwordHabits: assessment.passwordHabits,
   phishingAwareness: assessment.phishingAwareness,
   twoFactorAuth: assessment.twoFactorAuth,
+  notes: assessment.notes || '',
   riskScore: assessment.riskScore,
   riskLevel: assessment.riskLevel,
   // Per-category score (0-100) using the same weights as the overall score.
@@ -42,7 +45,11 @@ router.post('/', async (req, res, next) => {
       answers[field] = value;
     }
 
-    const assessment = await Assessment.create({ ...answers, ...calculateRisk(answers), user: req.user._id });
+    const notes = req.body?.notes ?? '';
+    if (typeof notes !== 'string') return res.status(400).json({ success: false, message: 'Notes must be text.' });
+    if (notes.trim().length > NOTES_MAX) return res.status(400).json({ success: false, message: `Notes can be at most ${NOTES_MAX} characters.` });
+
+    const assessment = await Assessment.create({ ...answers, notes: notes.trim(), ...calculateRisk(answers), user: req.user._id });
     res.status(201).json({ success: true, assessment: toResponse(assessment) });
   } catch (error) {
     next(error);

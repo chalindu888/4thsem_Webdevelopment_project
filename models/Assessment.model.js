@@ -5,6 +5,7 @@ const AssessmentSchema = new mongoose.Schema({
   passwordHabits: { type: String, enum: ['strong', 'mixed', 'weak'], required: true },
   phishingAwareness: { type: String, enum: ['high', 'medium', 'low'], required: true },
   twoFactorAuth: { type: String, enum: ['enabled', 'some', 'none'], required: true },
+  notes: { type: String, trim: true, maxlength: 300, default: '' },
   riskScore: { type: Number, min: 0, max: 100, required: true },
   riskLevel: { type: String, required: true },
 }, { timestamps: true });

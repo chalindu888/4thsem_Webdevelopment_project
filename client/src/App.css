@@ -1874,3 +1874,58 @@
 .topnav {
   --nav-subtle: #8b919c;
 }
+
+/* Assessment form: labels, notes box and per-field validation */
+.assessment-form .form-group {
+  margin-bottom: 18px;
+}
+
+.assessment-form .form-group > label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.assessment-form textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #131419;
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+
+.assessment-form select:focus,
+.assessment-form textarea:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(229, 32, 47, 0.18);
+}
+
+.assessment-form select:disabled,
+.assessment-form textarea:disabled {
+  opacity: 0.6;
+}
+
+.assessment-form .is-invalid {
+  border-color: rgba(244, 63, 94, 0.75);
+}
+
+.field-error {
+  margin: 6px 0 0;
+  color: #fb7185;
+  font-size: 12px;
+  text-align: left;
+}
+
+.field-hint {
+  margin: 6px 0 0;
+  color: var(--text-faint);
+  font-size: 12px;
+  text-align: left;
+}

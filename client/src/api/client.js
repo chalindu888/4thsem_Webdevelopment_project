@@ -1,9 +1,15 @@
 import axios from 'axios'
 
+// '/api' goes through the Vite dev proxy (vite.config.js) to Express on port 5000.
+// In production VITE_API_URL points at the deployed backend. Every route lives under /api,
+// so add it if the variable was set without it (e.g. "https://my-api.vercel.app").
+function resolveBaseURL() {
+  const configured = (import.meta.env.VITE_API_URL || '/api').trim().replace(/\/+$/, '')
+  return configured.endsWith('/api') ? configured : `${configured}/api`
+}
+
 const api = axios.create({
-  // '/api' goes through the Vite dev proxy (vite.config.js) to Express on port 5000.
-  // Set VITE_API_URL to a full URL only when the API is hosted elsewhere.
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: resolveBaseURL(),
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',

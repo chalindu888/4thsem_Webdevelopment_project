@@ -20,7 +20,10 @@ app.use(cors({
 app.use(express.json());
 app.use(morgan('dev'));
 app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/assessment', require('./routes/assessmentRoutes'));
+const assessmentRoutes = require('./routes/assessmentRoutes');
+// Singular and plural both work, so either URL style avoids a 404.
+app.use('/api/assessment', assessmentRoutes);
+app.use('/api/assessments', assessmentRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({

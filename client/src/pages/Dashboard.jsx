@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import ScrollReactive from '../components/ScrollReactive'
 import api, { clearSession, getErrorMessage } from '../api/client'
@@ -105,6 +105,9 @@ function buildRecommendations(latest, completedIds) {
 
 function Dashboard() {
   const navigate = useNavigate()
+  const location = useLocation()
+  // Set when arriving straight from the assessment form.
+  const [savedAssessment, setSavedAssessment] = useState(location.state?.savedAssessment ?? null)
   const [firstName] = useState(readFirstName)
   const [completedIds] = useState(getCompletedModules)
   const [history, setHistory] = useState([])
@@ -112,6 +115,11 @@ function Dashboard() {
   const [error, setError] = useState('')
   const [quickVisible, setQuickVisible] = useState(false)
   const quickRef = useRef(null)
+
+  // Clear the router state so a page refresh doesn't show the success message again.
+  useEffect(() => {
+    if (location.state?.savedAssessment) navigate(location.pathname, { replace: true, state: null })
+  }, [location.state, location.pathname, navigate])
 
   // Reveal the quick actions when they scroll into view instead of animating off-screen.
   useEffect(() => {
@@ -177,6 +185,22 @@ function Dashboard() {
             </Link>
           </div>
         </header>
+
+        {savedAssessment && (
+          <div className="db-success" role="status">
+            <Icon name="check" />
+            <span>
+              Assessment saved. Your score is <strong>{savedAssessment.riskScore}/100</strong> (
+              {statusOf('riskLevel', savedAssessment.riskLevel).label}).
+            </span>
+            <Link to="/results" state={{ assessment: savedAssessment }} className="db-link">
+              View report <Icon name="arrow" />
+            </Link>
+            <button type="button" className="db-success-close" aria-label="Dismiss" onClick={() => setSavedAssessment(null)}>
+              ×
+            </button>
+          </div>
+        )}
 
         {status === 'error' && (
           <div className="db-alert" role="alert">

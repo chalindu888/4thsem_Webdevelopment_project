@@ -1523,3 +1523,50 @@
     font-size: 34px;
   }
 }
+
+/* Success message after submitting an assessment */
+.db-success {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 12px 14px 12px 16px;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.1);
+  color: #d1fae5;
+  font-size: 15px;
+  animation: db-rise 450ms var(--db-ease) backwards;
+}
+
+.db-success > .db-icon {
+  color: #34d399;
+}
+
+.db-success > span {
+  flex: 1;
+}
+
+.db-success strong {
+  color: white;
+}
+
+.db-success .db-link {
+  color: #a7f3d0;
+}
+
+.db-success-close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: transparent;
+  color: #a7f3d0;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.db-success-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
