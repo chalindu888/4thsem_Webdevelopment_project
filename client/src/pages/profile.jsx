@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import api, { clearSession, getErrorMessage } from '../api/client'
 import { notifySessionChange } from '../services/session'
@@ -41,8 +41,12 @@ const formatDateTime = (value) =>
 
 function Profile() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [user, setUser] = useState(readUser)
-  const [activeTab, setActiveTab] = useState('overview')
+  // "All assessments" on the results page opens the Activity tab directly.
+  const [activeTab, setActiveTab] = useState(() =>
+    TABS.some((tab) => tab.id === location.state?.tab) ? location.state.tab : 'overview',
+  )
   const [history, setHistory] = useState([])
   const [historyStatus, setHistoryStatus] = useState('loading')
   const [historyError, setHistoryError] = useState('')

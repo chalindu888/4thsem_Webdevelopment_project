@@ -1929,3 +1929,18 @@
   font-size: 12px;
   text-align: left;
 }
+
+/* "Cancel" link under the button when editing an assessment */
+.assessment-cancel {
+  display: inline-block;
+  margin-top: 14px;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.assessment-cancel:hover {
+  color: var(--text);
+  text-decoration: underline;
+}

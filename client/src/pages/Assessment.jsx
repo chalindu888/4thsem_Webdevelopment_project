@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import api, { clearSession, getErrorMessage } from '../api/client'
 import Navbar from '../components/Navbar'
@@ -40,9 +40,23 @@ const QUESTIONS = [
 
 const EMPTY_FORM = { passwordHabits: '', phishingAwareness: '', twoFactorAuth: '', notes: '' }
 
+// Pre-fills the form when editing an existing assessment.
+function formFrom(assessment) {
+  if (!assessment) return EMPTY_FORM
+  return {
+    passwordHabits: assessment.passwordHabits ?? '',
+    phishingAwareness: assessment.phishingAwareness ?? '',
+    twoFactorAuth: assessment.twoFactorAuth ?? '',
+    notes: assessment.notes ?? '',
+  }
+}
+
 function Assessment() {
   const navigate = useNavigate()
-  const [form, setForm] = useState(EMPTY_FORM)
+  const location = useLocation()
+  // Set when arriving from "Edit answers" on the results page.
+  const editing = location.state?.editAssessment ?? null
+  const [form, setForm] = useState(() => formFrom(editing))
   const [fieldErrors, setFieldErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -77,12 +91,21 @@ function Assessment() {
     setLoading(true)
 
     try {
-      const { data } = await api.post('/assessment', {
+      const payload = {
         passwordHabits: form.passwordHabits,
         phishingAwareness: form.phishingAwareness,
         twoFactorAuth: form.twoFactorAuth,
         notes: form.notes.trim(),
-      })
+      }
+
+      if (editing) {
+        // Update in place, then show the refreshed report.
+        const { data } = await api.put(`/assessment/${editing.id}`, payload)
+        navigate(`/results?id=${data.assessment.id}`, { replace: true, state: { assessment: data.assessment, justSaved: true } })
+        return
+      }
+
+      const { data } = await api.post('/assessment', payload)
       // The dashboard shows a success message and reloads, so the new score appears straight away.
       navigate('/dashboard', { state: { savedAssessment: data.assessment } })
     } catch (requestError) {
@@ -105,7 +128,7 @@ function Assessment() {
 
         <span className="section-tag">SECURITY ASSESSMENT</span>
 
-        <h1>Cybersecurity Risk Assessment</h1>
+        <h1>{editing ? 'Edit your answers' : 'Cybersecurity Risk Assessment'}</h1>
 
         <p>
           Answer three questions about your digital security habits. Your responses are scored to
@@ -165,8 +188,14 @@ function Assessment() {
           </div>
 
           <button className="primary-btn large-btn" type="submit" disabled={loading}>
-            {loading ? 'Saving…' : 'Submit Assessment →'}
+            {loading ? 'Saving…' : editing ? 'Save changes' : 'Submit Assessment →'}
           </button>
+
+          {editing && (
+            <Link to={`/results?id=${editing.id}`} state={{ assessment: editing }} className="assessment-cancel">
+              Cancel
+            </Link>
+          )}
         </form>
 
         {error && <p className="form-message error-message" role="alert">{error}</p>}
