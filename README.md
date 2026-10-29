@@ -252,12 +252,19 @@ Content-Type: application/json
 
 Add screenshots of the actual working application to `docs/screenshots/` and then uncomment these Markdown lines:
 
-```markdown
-<!-- ![Home Page](docs/screenshots/home.png) -->
-<!-- ![Dashboard](docs/screenshots/dashboard.png) -->
-<!-- ![Risk Assessment](docs/screenshots/assessment.png) -->
-<!-- ![Assessment Results](docs/screenshots/results.png) -->
-```
+## 🖼️ Screenshots
+
+### 🏠 Home Page
+![Home Page](docs/screenshots/home.jpeg)
+
+### 📊 User Dashboard
+![Dashboard](docs/screenshots/dashboard.jpeg)
+
+### 🛡️ Risk Assessment
+![Risk Assessment](docs/screenshots/assessment.jpeg)
+
+### 📈 Assessment Results
+![Assessment Results](docs/screenshots/results.jpeg)
 
 Suggested screenshots: **Home**, **Dashboard**, **Awareness Modules**, **Assessment**, **Results**, and **Profile**. Avoid screenshots containing real passwords, authentication tokens, or personal account data.
 
